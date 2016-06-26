@@ -1,7 +1,7 @@
-package com.thoughtpal.com.thoughtpal.com.thoughtpal.controller;
+package com.thoughtpal.controller;
 
-import com.thoughtpal.com.thoughtpal.model.Workspace;
-import com.thoughtpal.com.thoughtpal.repo.WorkspaceRepository;
+import com.thoughtpal.model.Workspace;
+import com.thoughtpal.repo.WorkspaceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;

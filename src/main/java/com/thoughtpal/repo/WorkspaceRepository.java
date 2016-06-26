@@ -1,6 +1,6 @@
-package com.thoughtpal.com.thoughtpal.repo;
+package com.thoughtpal.repo;
 
-import com.thoughtpal.com.thoughtpal.model.Workspace;
+import com.thoughtpal.model.Workspace;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.List;
