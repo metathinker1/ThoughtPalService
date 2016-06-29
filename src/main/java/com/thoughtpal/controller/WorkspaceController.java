@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -19,6 +21,14 @@ public class WorkspaceController {
 
     @Autowired
     private WorkspaceRepository workspaceRepo;
+
+    // TODO: Pass in userid
+    @RequestMapping(method = RequestMethod.GET)
+    public List<String> getWorkspaces() {
+        List<String> workspaceNames = new ArrayList<>();
+        workspaceNames.add("Personal");
+        return workspaceNames;
+    }
 
     @RequestMapping(method = RequestMethod.POST)
     public String createWorkspace(@RequestBody Map<String, Object> workspaceMap) {
