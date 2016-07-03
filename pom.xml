@@ -7,7 +7,7 @@
   <version>0.1.0-SNAPSHOT</version>
   <packaging>jar</packaging>
 
-  <name>thoughtpal-service</name>
+  <userName>thoughtpal-service</userName>
   <url>http://maven.apache.org</url>
 
   <properties>

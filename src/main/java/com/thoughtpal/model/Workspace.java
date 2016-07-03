@@ -38,4 +38,12 @@ public class Workspace {
         this.name = name;
     }
 
+    @Override
+    public String toString() {
+        return "Workspace{" +
+                "id='" + id + '\'' +
+                ", ownerId='" + ownerId + '\'' +
+                ", name='" + name + '\'' +
+                '}';
+    }
 }
