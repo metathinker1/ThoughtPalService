@@ -1,6 +1,6 @@
 package com.thoughtpal.controller;
 
-import com.thoughtpal.model.Workspace;
+import com.thoughtpal.model.admin.Workspace;
 import com.thoughtpal.repo.WorkspaceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 /**

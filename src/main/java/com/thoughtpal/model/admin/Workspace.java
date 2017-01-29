@@ -1,4 +1,4 @@
-package com.thoughtpal.model;
+package com.thoughtpal.model.admin;
 
 import org.springframework.data.annotation.Id;
 
