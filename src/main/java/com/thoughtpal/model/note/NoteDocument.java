@@ -213,7 +213,7 @@ public class NoteDocument {
 	        	buf.append(": ");
 	        	buf.append(convertToSafeText(note.getSummaryText()));
 	    		buf.append("<BR></BR>");
-	    		buf.append("<BR></BR>");
+	    		///buf.append("<BR></BR>");
 	    		if (isDisplayTags) {
 		    		List<Tag> tags = note.getTags();
 		    		for (Tag tag: tags) {
@@ -249,7 +249,7 @@ public class NoteDocument {
 			    		buf.append("<BR></BR>");
 		    		}
 	    		}
-	    		buf.append("<BR></BR>");
+	    		///buf.append("<BR></BR>");
         	}
         }
 		buf.append("</p>");
