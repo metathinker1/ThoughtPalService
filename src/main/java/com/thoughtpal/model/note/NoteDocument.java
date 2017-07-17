@@ -183,7 +183,9 @@ public class NoteDocument {
 	buf.append(text);
 	buf.append("</a>");
 	*/
-	
+
+	// TODO: Refactor: collapse / expand functionality: into the HTML / Javascript paradigm
+	// TODO: Rename: toHTMLSnippet() ?
 	private String toXMLMetaViewStringOutline() {
 		StringBuffer buf = new StringBuffer();
 		buf.append("<form>");
