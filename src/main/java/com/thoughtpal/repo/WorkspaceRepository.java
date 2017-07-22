@@ -11,7 +11,7 @@ import java.util.List;
  Usage:
  - Do not get by Name alone: must get by OwnerId and Name
  */
-public interface WorkspaceRepository extends MongoRepository<Workspace, String> {
+public interface WorkspaceRepository /*extends MongoRepository<Workspace, String> */ {
     Workspace findById(String id);
     Workspace getByOwnerIdAndName(String ownerId, String workspaceName);
     List<Workspace> findByOwnerId(String ownerId);

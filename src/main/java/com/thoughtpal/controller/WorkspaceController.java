@@ -25,12 +25,13 @@ public class WorkspaceController {
     }
 
     //@RequestMapping(method = RequestMethod.POST)
+    /*
     public String createWorkspace(@RequestBody Map<String, Object> workspaceFields) {
         Workspace workspace = new Workspace(workspaceFields.get("ownerId").toString(), workspaceFields.get("name").toString());
         workspaceRepo.save(workspace);
         String response = "Workspace (" + workspace + ") was saved";
         return response;
-    }
+    }*/
 
 
 

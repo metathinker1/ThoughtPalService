@@ -8,7 +8,7 @@ import java.util.Map;
 import com.thoughtpal.model.tag.SourceTag;
 import com.thoughtpal.model.tag.Tag;
 import lombok.Data;
-import org.apache.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 
 
 /*
@@ -18,6 +18,7 @@ import org.apache.log4j.Logger;
  */
 
 @Data
+@Slf4j
 public class NoteDocument {
 
 	private String				contextName;
@@ -37,7 +38,7 @@ public class NoteDocument {
 	
 	private NoteDocParser	noteDocParser = new NoteDocParser();
 
-    private static Logger logger = Logger.getLogger(NoteDocument.class);
+    //private static Logger logger = log.getLogger(NoteDocument.class);
 
 	public enum NoteDocumentType {
 		NoteJournal, NoteOutline, NoteSource

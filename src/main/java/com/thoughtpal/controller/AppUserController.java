@@ -20,10 +20,11 @@ public class AppUserController {
     }
 
     //@RequestMapping(method = RequestMethod.POST)
+    /*
     public String createWorkspace(@RequestBody Map<String, Object> userFields) {
         AppUser user = new AppUser(userFields.get("userName").toString(), userFields.get("email").toString());
         userRepo.save(user);
         String response = "User (" + user + ") was saved";
         return response;
-    }
+    }*/
 }

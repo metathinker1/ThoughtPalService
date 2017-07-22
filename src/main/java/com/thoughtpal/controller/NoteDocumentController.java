@@ -38,6 +38,7 @@ public class NoteDocumentController {
 */
 
     //@RequestMapping(value = "/notedoc", params = {"noteDocName", "workspace"}, method = RequestMethod.GET)
+    /*
     public String getNoteDocument(@RequestParam("noteDocName") String noteDocName, @RequestParam("workspace") String workspace) {
         String noteDocAsString = noteDocsClient.getNoteDocAsString(noteDocName, workspace);
 
@@ -56,6 +57,6 @@ public class NoteDocumentController {
         htmlString.append(noteDoc.toXMLMetaViewString());
         htmlString.append("</body></html>");
         return htmlString.toString();
-    }
+    }*/
 
 }

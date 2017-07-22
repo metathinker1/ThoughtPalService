@@ -17,7 +17,11 @@ public abstract class BaseTag implements Tag {
 	private int		endTextOffset;
 	private Map<String, Object> 	nameValues = new HashMap<String, Object>();
 
-	// DRY Violation Optimization: to support scoped search in persistent store
+	// TODO: Review these:
+    private int     startTextPosn;
+    private int     endTextPosn;
+
+    // DRY Violation Optimization: to support scoped search in persistent store
 	private String	summaryText;
 
 

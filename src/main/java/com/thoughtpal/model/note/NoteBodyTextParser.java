@@ -8,9 +8,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.thoughtpal.model.tag.*;
-import org.apache.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 
 // TODO: Move to Functor
+@Slf4j
 public class NoteBodyTextParser {
 	
 
@@ -30,7 +31,7 @@ public class NoteBodyTextParser {
 	private Map<Pattern, Class<? extends NoteTextParserFSM>> 	beginPatternMap = new HashMap<Pattern, Class<? extends NoteTextParserFSM>>();
 	private ParserState								parserState = new ParserState();
 
-    private static Logger logger = Logger.getLogger(NoteBodyTextParser.class);
+    //private static Logger logger = log.getLogger(NoteBodyTextParser.class);
 
     
     public NoteBodyTextParser() {
@@ -96,7 +97,7 @@ public class NoteBodyTextParser {
 		}
 		
 		public void initializeTag(Tag tag) {
-			tag.setObjId(tagObjId++);
+			tag.setObjId(Integer.toString(tagObjId++));
 			note.addTag(tag);
 			tag.setStartTextPosn(noteBodyTextPosn - words[ix_words].length() + 1);
 			tagText = new StringBuffer();
@@ -125,7 +126,7 @@ public class NoteBodyTextParser {
 			noteBodyTextPosn += words[ix_words].length();	// Add 1 for ' ' ?
 			
 			if (words[ix_words].startsWith("{DataTag")) {
-				logger.info("stop here");
+				///log.info("stop here");
 			}
 		}
 		
@@ -254,7 +255,7 @@ public class NoteBodyTextParser {
 						//NoteTextParserFSM newParser = clzz.getConstructor(null).newInstance();
 						NoteTextParserFSM newParser = hack_createParser(clzz);
 						if (newParser == null) {
-							logger.error("stop here");
+							///log.error("stop here");
 						}
 						newParser.initialize();
 						newParser.setParentParser(this);
@@ -264,17 +265,17 @@ public class NoteBodyTextParser {
 						return newParser;
 
 					} catch (IllegalArgumentException e) {
-						logger.error("getOrCreateParserFSM: caught[" + e + "]");
+                        ///log.error("getOrCreateParserFSM: caught[" + e + "]");
 					} catch (SecurityException e) {
-						logger.error("getOrCreateParserFSM: caught[" + e + "]");
+                        ///log.error("getOrCreateParserFSM: caught[" + e + "]");
 					} /*catch (InstantiationException e) {
-						logger.error("getOrCreateParserFSM: caught[" + e + "]");
+						log.error("getOrCreateParserFSM: caught[" + e + "]");
 					} catch (IllegalAccessException e) {
-						logger.error("getOrCreateParserFSM: caught[" + e + "]");
+						log.error("getOrCreateParserFSM: caught[" + e + "]");
 					} catch (InvocationTargetException e) {
-						logger.error("getOrCreateParserFSM: caught[" + e + "]");
+						log.error("getOrCreateParserFSM: caught[" + e + "]");
 					} catch (NoSuchMethodException e) {
-						logger.error("getOrCreateParserFSM: caught[" + e + "]");
+						log.error("getOrCreateParserFSM: caught[" + e + "]");
 					}*/
 					
 				}
@@ -312,7 +313,7 @@ public class NoteBodyTextParser {
 			try {
 				summary = line.substring(startPosn, endPosn);
 			} catch (StringIndexOutOfBoundsException e) {
-				logger.error("calcTagSummaryText: caught [" + e + "]");
+                ///log.error("calcTagSummaryText: caught [" + e + "]");
 				summary = "";
 			}
 			return summary;
@@ -412,7 +413,7 @@ public class NoteBodyTextParser {
 		
 		public void setTag(Tag tag) {
 			if (tag == null) {
-				logger.warn("setTag: tag is null");
+                ///log.warn("setTag: tag is null");
 			}
 			this.tag = tag;
 		}

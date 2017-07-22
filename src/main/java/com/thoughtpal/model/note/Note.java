@@ -25,10 +25,17 @@ public class Note {
 	private int		startNoteOffset;
 	private int		endNoteOffset;
 	private int		startSummaryTextOffset;
-	private Map<String, Tag> 	tags = new HashMap<String, Tag>();
+	private Map<String, Tag> 	tagMap = new HashMap<String, Tag>();
+
+	// TODO: Review these:
+	private String	locationTag;
+	private int     startSummaryTextPosn;
+    private int     startTextPosn;
+    private int     endTextPosn;
 
 	// DRY Violation Optimization: to support scoped search in persistent store
 	private String	summaryText;
+	private List<Tag>   tags = new ArrayList<>();
 
 
 
@@ -37,11 +44,11 @@ public class Note {
 	
 
 	public void addTag(Tag tag) {
-		tags.put(tag.getObjId(), tag);
+		tagMap.put(tag.getObjId(), tag);
 	}
 
 	public Tag getTag(String tagId) throws ObjectNotFoundException {
-		Tag tag = tags.get(tagId);
+		Tag tag = tagMap.get(tagId);
 		if (tag != null) {
 			return tag;
 		} else {

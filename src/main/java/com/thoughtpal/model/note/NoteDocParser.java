@@ -5,9 +5,10 @@ import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 
 // TODO: Move to Functor
+@Slf4j
 public class NoteDocParser {
 	
 	private boolean	isTagParseEnabled = false;
@@ -19,7 +20,7 @@ public class NoteDocParser {
 	
 	private NoteBodyTextParser	noteBodyTextParser = new NoteBodyTextParser();
 	
-    private static Logger logger = Logger.getLogger(NoteDocParser.class);
+    //private static Logger logger = log.getLogger(NoteDocParser.class);
     
     public NoteDocParser() {
     	
@@ -156,7 +157,8 @@ public class NoteDocParser {
 				try {
 					outlineLevel = Integer.parseInt(line.substring(6, line.length() - 1));
 				} catch (NumberFormatException e) {
-					logger.error("parseNoteOutline: caught [" + e.getMessage() + "] for Note: [" + note.getSummaryText() + "]");
+				    String msg = "parseNoteOutline: caught [" + e.getMessage() + "] for Note: [" + note.getSummaryText() + "]";
+					///log.error(msg, e);
 					// Leave outlineLevel unchanged;
 				}
 				if (outlineLevel > outlineLocation.size()) {

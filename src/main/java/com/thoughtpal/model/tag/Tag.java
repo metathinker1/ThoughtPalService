@@ -14,9 +14,16 @@ public interface Tag {
 	void setStartTextOffset(int startTextOffset) ;
 	int getEndTextOffset() ;
 	void setEndTextOffset(int endTextOffset) ;
-	int getTagLength();
 	String getNameValuesAsString();
 	Object getValue(String name);
 	void parseNameValuePairs(String nameValuesStr);
+
+	// TODO: Review these:
+    int getStartTextPosn();
+    void setStartTextPosn(int startTextPosn);
+    int getEndTextPosn();
+    void setEndTextPosn(int endTextPosn);
+
+    //int getTagLength();
 
 }
