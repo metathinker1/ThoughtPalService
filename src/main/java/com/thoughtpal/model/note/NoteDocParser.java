@@ -7,6 +7,7 @@ import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
 
+// TODO: Move to Functor
 public class NoteDocParser {
 	
 	private boolean	isTagParseEnabled = false;

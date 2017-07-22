@@ -1,13 +1,15 @@
 package com.thoughtpal.model.admin;
 
-import org.springframework.data.annotation.Id;
+
+import lombok.Data;
 
 /**
  * Created by robertwood on 4/30/16.
  */
+@Data
 public class Workspace {
 
-    @Id
+    //@Id
     private String  id;
 
     private String  ownerId;
@@ -18,26 +20,7 @@ public class Workspace {
         this.name = name;
     }
 
-    public String getId() {
-        return id;
-    }
-
-    public String getOwnerId() {
-        return ownerId;
-    }
-
-    public void setOwnerId(String ownerId) {
-        this.ownerId = ownerId;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
+    /*
     @Override
     public String toString() {
         return "Workspace{" +
@@ -45,5 +28,5 @@ public class Workspace {
                 ", ownerId='" + ownerId + '\'' +
                 ", name='" + name + '\'' +
                 '}';
-    }
+    }*/
 }

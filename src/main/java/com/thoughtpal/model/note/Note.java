@@ -1,88 +1,55 @@
 package com.thoughtpal.model.note;
 
+import com.thoughtpal.com.thoughtpal.util.ObjectNotFoundException;
 import com.thoughtpal.model.tag.Tag;
+import lombok.Data;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+
+/*
+ *  Purpose: Holds metadata for a Note within a NoteDocument
+ *
+ */
+
+@Data
 public class Note {
-	  
-	private String	summaryText;
-	private int		startTextPosn;
-	private int		startSummaryTextPosn;
-	private int		endTextPosn;
-	private String	locationTag;	// TODO: Refactor as class
+
+	// Initial implementation: Reset each time the associated Note is parsed
+	//   TODO: Refactor to be immutable AFTER Metadata Aware Editor has been implemented
 	private String		objId;
-	
+
+	private int		startNoteOffset;
+	private int		endNoteOffset;
+	private int		startSummaryTextOffset;
+	private Map<String, Tag> 	tags = new HashMap<String, Tag>();
+
+	// DRY Violation Optimization: to support scoped search in persistent store
+	private String	summaryText;
+
+
+
 	// TODO: When objId is persisted then move this to NoteDocument: Map<String, Boolean> noteDisplayMap
-	private boolean isDisplayInOutline;
+	//private boolean isDisplayInOutline;
 	
-	private List<Tag> 	tags = new ArrayList<Tag>();
-	
-	public String getSummaryText() {
-		return summaryText;
-	}
-	public void setSummaryText(String summaryText) {
-		this.summaryText = summaryText;
-	}
-	public int getStartTextPosn() {
-		return startTextPosn;
-	}
-	public void setStartTextPosn(int startTextPosn) {
-		this.startTextPosn = startTextPosn;
-	}
-	public int getStartSummaryTextPosn() {
-		return startSummaryTextPosn;
-	}
-	public void setStartSummaryTextPosn(int startSummaryTextPosn) {
-		this.startSummaryTextPosn = startSummaryTextPosn;
-	}
-	public int getEndTextPosn() {
-		return endTextPosn;
-	}
-	public void setEndTextPosn(int endTextPosn) {
-		this.endTextPosn = endTextPosn;
-	}
-	public int getNoteLength() {
-		return endTextPosn - startTextPosn + 1;
-	}
-	public String getLocationTag() {
-		return locationTag;
-	}
-	public void setLocationTag(String locationTag) {
-		this.locationTag = locationTag;
-	}
-	
-	public String getObjId() {
-		return objId;
-	}
-	public void setObjId(String objId) {
-		this.objId = objId;
-	}
-	
+
 	public void addTag(Tag tag) {
-		tags.add(tag);
+		tags.put(tag.getObjId(), tag);
 	}
-	public List<Tag> getTags() {
-		return tags;
-	}
-	
-	public Tag getTag(int tagId) {
-		assert tagId >= 0;
-		assert tagId < tags.size();
-		return tags.get(tagId);
-	}
-	
-	
-	public boolean isDisplayInOutline() {
-		return isDisplayInOutline;
+
+	public Tag getTag(String tagId) throws ObjectNotFoundException {
+		Tag tag = tags.get(tagId);
+		if (tag != null) {
+			return tag;
+		} else {
+			throw new ObjectNotFoundException("Tag: " + tagId);
+		}
 	}
 	
-	public void setDisplayInOutline(boolean isDisplayInOutline) {
-		this.isDisplayInOutline = isDisplayInOutline;
-	}
-	
+	/*
 	public String toString() {
 		StringBuffer strBuf = new StringBuffer();
 		strBuf.append(locationTag);
@@ -93,6 +60,6 @@ public class Note {
 		strBuf.append(", ");
 
 		return strBuf.toString();
-	}
+	}*/
 	
 }

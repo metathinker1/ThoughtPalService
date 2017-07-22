@@ -7,10 +7,17 @@ import java.util.Map;
 
 import com.thoughtpal.model.tag.SourceTag;
 import com.thoughtpal.model.tag.Tag;
+import lombok.Data;
 import org.apache.log4j.Logger;
 
 
+/*
+ *  Purpose: Holds metadata for a NoteDocument.
+ *    Actual NoteDocument Text stored in flat file for now, but expect to move that to Solr
+ *
+ */
 
+@Data
 public class NoteDocument {
 
 	private String				contextName;

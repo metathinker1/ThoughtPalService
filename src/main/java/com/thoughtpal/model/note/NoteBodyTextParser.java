@@ -10,6 +10,7 @@ import java.util.regex.Pattern;
 import com.thoughtpal.model.tag.*;
 import org.apache.log4j.Logger;
 
+// TODO: Move to Functor
 public class NoteBodyTextParser {
 	
 

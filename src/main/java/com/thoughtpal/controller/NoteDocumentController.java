@@ -3,15 +3,12 @@ package com.thoughtpal.controller;
 import com.thoughtpal.client.NoteDocsClient;
 import com.thoughtpal.model.note.NoteDocParser;
 import com.thoughtpal.model.note.NoteDocument;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
 /**
  * Created by robertwood on 2/3/17.
  */
-@RestController
 public class NoteDocumentController {
     //@Autowired
     private NoteDocsClient  noteDocsClient = new NoteDocsClient();
@@ -40,7 +37,7 @@ public class NoteDocumentController {
     }
 */
 
-    @RequestMapping(value = "/notedoc", params = {"noteDocName", "workspace"}, method = RequestMethod.GET)
+    //@RequestMapping(value = "/notedoc", params = {"noteDocName", "workspace"}, method = RequestMethod.GET)
     public String getNoteDocument(@RequestParam("noteDocName") String noteDocName, @RequestParam("workspace") String workspace) {
         String noteDocAsString = noteDocsClient.getNoteDocAsString(noteDocName, workspace);
 
