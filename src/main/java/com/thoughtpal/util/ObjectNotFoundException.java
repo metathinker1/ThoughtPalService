@@ -1,4 +1,4 @@
-package com.thoughtpal.com.thoughtpal.util;
+package com.thoughtpal.util;
 
 /**
  * Created by robertwood on 7/18/17.

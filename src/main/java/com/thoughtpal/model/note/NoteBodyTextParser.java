@@ -8,10 +8,12 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.thoughtpal.model.tag.*;
-import lombok.extern.slf4j.Slf4j;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+//import lombok.extern.slf4j.Slf4j;
 
 // TODO: Move to Functor
-@Slf4j
+//@Slf4j
 public class NoteBodyTextParser {
 	
 
@@ -31,7 +33,7 @@ public class NoteBodyTextParser {
 	private Map<Pattern, Class<? extends NoteTextParserFSM>> 	beginPatternMap = new HashMap<Pattern, Class<? extends NoteTextParserFSM>>();
 	private ParserState								parserState = new ParserState();
 
-    //private static Logger logger = log.getLogger(NoteBodyTextParser.class);
+    private static Logger log = LogManager.getLogger();
 
     
     public NoteBodyTextParser() {
@@ -126,7 +128,7 @@ public class NoteBodyTextParser {
 			noteBodyTextPosn += words[ix_words].length();	// Add 1 for ' ' ?
 			
 			if (words[ix_words].startsWith("{DataTag")) {
-				///log.info("stop here");
+				log.info("stop here");
 			}
 		}
 		
@@ -255,7 +257,7 @@ public class NoteBodyTextParser {
 						//NoteTextParserFSM newParser = clzz.getConstructor(null).newInstance();
 						NoteTextParserFSM newParser = hack_createParser(clzz);
 						if (newParser == null) {
-							///log.error("stop here");
+							log.error("stop here");
 						}
 						newParser.initialize();
 						newParser.setParentParser(this);
@@ -265,9 +267,9 @@ public class NoteBodyTextParser {
 						return newParser;
 
 					} catch (IllegalArgumentException e) {
-                        ///log.error("getOrCreateParserFSM: caught[" + e + "]");
+                        log.error("getOrCreateParserFSM: caught[" + e + "]");
 					} catch (SecurityException e) {
-                        ///log.error("getOrCreateParserFSM: caught[" + e + "]");
+                        log.error("getOrCreateParserFSM: caught[" + e + "]");
 					} /*catch (InstantiationException e) {
 						log.error("getOrCreateParserFSM: caught[" + e + "]");
 					} catch (IllegalAccessException e) {
@@ -313,7 +315,7 @@ public class NoteBodyTextParser {
 			try {
 				summary = line.substring(startPosn, endPosn);
 			} catch (StringIndexOutOfBoundsException e) {
-                ///log.error("calcTagSummaryText: caught [" + e + "]");
+                log.error("calcTagSummaryText: caught [" + e + "]");
 				summary = "";
 			}
 			return summary;
@@ -407,13 +409,12 @@ public class NoteBodyTextParser {
 		private Tag				tag;
 		private StringBuffer 	nameValuesText = new StringBuffer();
 		
-		@Override
-		public void initialize() {			
+		public void initialize() {
 		}
 		
 		public void setTag(Tag tag) {
 			if (tag == null) {
-                ///log.warn("setTag: tag is null");
+                log.warn("setTag: tag is null");
 			}
 			this.tag = tag;
 		}

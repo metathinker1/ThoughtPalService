@@ -1,6 +1,6 @@
 package com.thoughtpal.model.note;
 
-import com.thoughtpal.com.thoughtpal.util.ObjectNotFoundException;
+import com.thoughtpal.util.ObjectNotFoundException;
 import com.thoughtpal.model.tag.Tag;
 import lombok.Data;
 
@@ -35,7 +35,7 @@ public class Note {
 
 	// DRY Violation Optimization: to support scoped search in persistent store
 	private String	summaryText;
-	private List<Tag>   tags = new ArrayList<>();
+	private List<Tag>   tags = new ArrayList<Tag>();
 
 
 
