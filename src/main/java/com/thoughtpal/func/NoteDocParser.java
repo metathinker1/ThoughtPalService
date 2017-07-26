@@ -1,4 +1,4 @@
-package com.thoughtpal.model.note;
+package com.thoughtpal.func;
 
 import java.util.Iterator;
 import java.util.Stack;
@@ -6,6 +6,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 //import lombok.extern.slf4j.Slf4j;
+import com.thoughtpal.model.note.Note;
+import com.thoughtpal.model.note.NoteDocumentText;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -20,7 +22,7 @@ public class NoteDocParser {
 	private Pattern beginOutlineNoteChunkPtrn = Pattern.compile("<Note [0-9]*>");  // <Note 1>
 	private Pattern beginSourceNoteChunkPtrn = Pattern.compile("<Note>");  // <Note>
 	
-	private NoteBodyTextParser	noteBodyTextParser = new NoteBodyTextParser();
+	private NoteBodyTextParser noteBodyTextParser = new NoteBodyTextParser();
 	
     private static Logger log = LogManager.getLogger();
     
@@ -32,9 +34,9 @@ public class NoteDocParser {
     	noteBodyTextParser.initialize();
     }
 
-	public void parseNoteJournal(NoteDocument noteDoc, String noteDocText) {
+	public void parseNoteJournal(NoteDocumentText noteDoc, String noteDocText) {
 		noteDoc.clearNotes();
-		int noteObjId = 0;	// Unique only to NoteDocument
+		int noteObjId = 0;	// Unique only to NoteDocumentText
 		int notePosn = 0;
 		String[] lines = noteDocText.split("\\n");
 		
@@ -53,7 +55,7 @@ public class NoteDocParser {
 				noteBodyText = new StringBuffer();
 				note.setLocationTag(line.substring(1, line.length() - 1));
 				note.setStartTextPosn(notePosn);
-				note.setObjId(Integer.toString(noteObjId++));
+				note.setId(Integer.toString(noteObjId++));
 				noteDoc.addNote(note);
 				parseSummaryText = true;
 			} else if (parseSummaryText) {
@@ -77,9 +79,9 @@ public class NoteDocParser {
 
 	}
 	
-	public void parseNoteOutline_TBD(NoteDocument noteDoc, String noteDocText) {
+	public void parseNoteOutline_TBD(NoteDocumentText noteDoc, String noteDocText) {
 		noteDoc.clearNotes();
-		int noteObjId = 0;	// Unique only to NoteDocument
+		int noteObjId = 0;	// Unique only to NoteDocumentText
 		int notePosn = 0;
 		String[] lines = noteDocText.split("\\n");
 
@@ -111,7 +113,7 @@ public class NoteDocParser {
 				}
 				note.setLocationTag(createLocationTag(outlineLocation));
 				note.setStartTextPosn(notePosn);
-				note.setObjId(Integer.toString(noteObjId++));
+				note.setId(Integer.toString(noteObjId++));
 				noteDoc.addNote(note);
 				parseSummaryText = true;
 			} else if (parseSummaryText) {
@@ -134,9 +136,9 @@ public class NoteDocParser {
 		}
 	}
 	
-	public void parseNoteOutline(NoteDocument noteDoc, String noteDocText) {
+	public void parseNoteOutline(NoteDocumentText noteDoc, String noteDocText) {
 		noteDoc.clearNotes();
-		int noteObjId = 0;	// Unique only to NoteDocument
+		int noteObjId = 0;	// Unique only to NoteDocumentText
 		int notePosn = 0;
 		String[] lines = noteDocText.split("\\n");
 
@@ -176,7 +178,7 @@ public class NoteDocParser {
 				}
 				note.setLocationTag(createLocationTag(outlineLocation));
 				note.setStartTextPosn(notePosn);
-				note.setObjId(Integer.toString(noteObjId++));
+				note.setId(Integer.toString(noteObjId++));
 				noteDoc.addNote(note);
 				parseSummaryText = true;
 			} else if (parseSummaryText) {
@@ -200,9 +202,9 @@ public class NoteDocParser {
 		}
 	}
 
-	public void parseNoteSource(NoteDocument noteDoc, String noteDocText) {
+	public void parseNoteSource(NoteDocumentText noteDoc, String noteDocText) {
 		noteDoc.clearNotes();
-		int noteObjId = 0;	// Unique only to NoteDocument
+		int noteObjId = 0;	// Unique only to NoteDocumentText
 		int notePosn = 0;
 		String[] lines = noteDocText.split("\\n");
 		
@@ -221,7 +223,7 @@ public class NoteDocParser {
 				noteBodyText = new StringBuffer();
 				note.setLocationTag(line.substring(1, line.length() - 1));
 				note.setStartTextPosn(notePosn);
-				note.setObjId(Integer.toString(noteObjId++));
+				note.setId(Integer.toString(noteObjId++));
 				noteDoc.addNote(note);
 				parseSummaryText = true;
 			} else if (parseSummaryText) {

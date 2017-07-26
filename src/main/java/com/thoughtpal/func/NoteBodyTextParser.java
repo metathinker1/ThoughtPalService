@@ -1,4 +1,4 @@
-package com.thoughtpal.model.note;
+package com.thoughtpal.func;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.thoughtpal.model.note.Note;
 import com.thoughtpal.model.tag.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -58,7 +59,7 @@ public class NoteBodyTextParser {
     	beginPatternMap.put(beginNameValuePairsPtrn, ParseNameValuePairsFSM.class);
     }
     
-	public void parseNoteBodyText(Note note, String noteBodyText) {		
+	public void parseNoteBodyText(Note note, String noteBodyText) {
 		parserState.reset(note, noteBodyText);
 		
 		NoteTextParserFSM parser = parseOpenTextFSM;
@@ -99,7 +100,7 @@ public class NoteBodyTextParser {
 		}
 		
 		public void initializeTag(Tag tag) {
-			tag.setObjId(Integer.toString(tagObjId++));
+			tag.setId(Integer.toString(tagObjId++));
 			note.addTag(tag);
 			tag.setStartTextPosn(noteBodyTextPosn - words[ix_words].length() + 1);
 			tagText = new StringBuffer();

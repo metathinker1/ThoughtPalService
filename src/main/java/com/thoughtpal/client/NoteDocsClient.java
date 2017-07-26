@@ -1,6 +1,5 @@
 package com.thoughtpal.client;
 
-import com.thoughtpal.model.note.NoteDocument;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;

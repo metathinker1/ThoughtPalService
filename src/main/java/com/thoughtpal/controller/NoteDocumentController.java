@@ -1,10 +1,7 @@
 package com.thoughtpal.controller;
 
 import com.thoughtpal.client.NoteDocsClient;
-import com.thoughtpal.model.note.NoteDocParser;
-import com.thoughtpal.model.note.NoteDocument;
-
-import java.util.Map;
+import com.thoughtpal.func.NoteDocParser;
 
 /**
  * Created by robertwood on 2/3/17.
@@ -42,8 +39,8 @@ public class NoteDocumentController {
     public String getNoteDocument(@RequestParam("noteDocName") String noteDocName, @RequestParam("workspace") String workspace) {
         String noteDocAsString = noteDocsClient.getNoteDocAsString(noteDocName, workspace);
 
-        //String contextName, String contextType, NoteDocumentType type, String workspaceName, boolean autoOpenEditor
-        NoteDocument noteDoc = new NoteDocument(noteDocName, "Outline", NoteDocument.NoteDocumentType.NoteOutline, workspace, false);
+        //String contextName, String contextType, NoteDocumentStructure type, String workspaceId, boolean autoOpenEditor
+        NoteDocumentText noteDoc = new NoteDocumentText(noteDocName, "Outline", NoteDocumentText.NoteDocumentStructure.NoteOutline, workspace, false);
         noteDocParser.parseNoteOutline(noteDoc, noteDocAsString);
 
         // Render noteDoc summaryText into HTML
