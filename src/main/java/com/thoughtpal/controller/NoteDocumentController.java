@@ -1,7 +1,7 @@
 package com.thoughtpal.controller;
 
 import com.thoughtpal.client.NoteDocsClient;
-import com.thoughtpal.func.NoteDocParser;
+import com.thoughtpal.func.NoteParser;
 
 /**
  * Created by robertwood on 2/3/17.
@@ -11,7 +11,7 @@ public class NoteDocumentController {
     private NoteDocsClient  noteDocsClient = new NoteDocsClient();
 
     //@Autowired
-    private NoteDocParser   noteDocParser = new NoteDocParser();
+    //private NoteParser noteDocParser = new NoteParser();
 
 /*
     @RequestMapping(value = "/test", params = {"noteDocName", "bar"}, method = RequestMethod.GET)

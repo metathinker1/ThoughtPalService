@@ -16,7 +16,7 @@ import org.apache.logging.log4j.Logger;
 // TODO: Move to Functor
 //@Slf4j
 public class NoteBodyTextParser {
-	
+/*
 
 	private Pattern beginActiveTaskTagPtrn = Pattern.compile("\\{TODO:");
 	private Pattern beginTextLinkTagPtrn = Pattern.compile("\\{TextLink:");
@@ -95,7 +95,7 @@ public class NoteBodyTextParser {
 			if (lines.length > 0) {
 				words = lines[0].split(" |:");
 				words = split(lines[0]);
-			}*/
+			}*
 			ix_words = -1;	
 		}
 		
@@ -279,7 +279,7 @@ public class NoteBodyTextParser {
 						log.error("getOrCreateParserFSM: caught[" + e + "]");
 					} catch (NoSuchMethodException e) {
 						log.error("getOrCreateParserFSM: caught[" + e + "]");
-					}*/
+					}*
 					
 				}
 			}
@@ -458,4 +458,5 @@ public class NoteBodyTextParser {
 		parser.testRegexPatterns(test01);
 
 	}
+	*/
 }
