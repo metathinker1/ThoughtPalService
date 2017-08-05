@@ -6,5 +6,5 @@ import com.thoughtpal.model.note.NoteDocumentText;
 import java.util.List;
 
 public interface NoteParser {
-    List<Note> parse(NoteDocumentText noteDocumentText);
+    List<Note> parse(NoteDocumentText noteDocText);
 }
