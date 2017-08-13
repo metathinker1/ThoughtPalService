@@ -2,9 +2,11 @@ package com.thoughtpal.manager;
 
 import com.thoughtpal.func.NoteParser;
 import com.thoughtpal.func.OutlineNoteParser;
+import com.thoughtpal.func.TagParser;
 import com.thoughtpal.model.note.Note;
 import com.thoughtpal.model.note.NoteDocument;
 import com.thoughtpal.model.note.NoteDocumentText;
+import com.thoughtpal.model.tag.Tag;
 
 import java.io.*;
 import java.nio.charset.Charset;
@@ -20,9 +22,12 @@ public class NoteDocumentManager {
 
     private Map<NoteDocument.NoteDocumentStructure, NoteParser> noteParserMap =
             new HashMap<NoteDocument.NoteDocumentStructure, NoteParser>();
+    private TagParser tagParser = new TagParser();
 
     public NoteDocumentManager() {
         noteParserMap.put(NoteDocument.NoteDocumentStructure.Outline, new OutlineNoteParser());
+
+        tagParser.initialize();
     }
 
     public void parse(NoteDocumentText noteDocText) {
@@ -33,8 +38,15 @@ public class NoteDocumentManager {
         // TODO: change to assert not null ...
         if (noteParser != null) {
             List<Note> notes = noteParser.parse(noteDocText);
+            for (Note note: notes) {
+                System.out.println("Note: " + note.getStartNoteOffset() + ": " + note.getLabel() + ": " + note.getSummaryText());
+            }
+            List<Tag> tags = tagParser.parse(noteDocText);
+            for (Tag tag: tags) {
+                System.out.println("Tag: " + tag.getStartTextOffset() + ": " + tag.getSummaryText());
+            }
         }
-
+        System.out.println("Finished");
     }
 
 
