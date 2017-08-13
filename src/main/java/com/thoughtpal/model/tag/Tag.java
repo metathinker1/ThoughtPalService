@@ -3,6 +3,7 @@ package com.thoughtpal.model.tag;
 import java.util.HashMap;
 import java.util.Map;
 
+import lombok.Builder;
 import lombok.Data;
 
 
@@ -28,8 +29,15 @@ public class Tag {
 	//private static Logger logger = Logger.getLogger(Tag.class);
 
     public enum TagType {
-        DataTag, DataLink, TextTag, TextLink, Task, SourceTag
+        DataTag, DataLink, TextTag, TextLink, Task, SourceTag, NameValuePairs
     }
+
+    @Builder
+	public Tag(String workspaceId, TagType tagType, int startTextOffset) {
+    	this.workspaceId = workspaceId;
+    	this.tagType = tagType;
+    	this.startTextOffset = startTextOffset;
+	}
 
 	/* Backlog:
 	public Object getValue(String name) {

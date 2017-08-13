@@ -1,5 +1,6 @@
 package com.thoughtpal.model.note;
 
+import lombok.Builder;
 import lombok.Data;
 
 import java.util.List;
@@ -16,6 +17,9 @@ public class NoteDocument {
     private String  subject;
     private NoteDocumentStructure   noteDocumentStructure;
 
+    // DRY Violation Optimization: to support scoped search in persistent store
+    private NoteDocumentText    noteDocumentText;
+
     /* TODO: Move
     private String				noteDocumentLocation;
     private boolean				autoOpenEditor;
@@ -30,9 +34,10 @@ public class NoteDocument {
     //private static Logger logger = log.getLogger(NoteDocumentText.class);
 
     public enum NoteDocumentStructure {
-        NoteJournal, NoteOutline, NoteSource
+        Outline, MeetingJournal, WorkJournal, InfoSource
     }
 
+    @Builder
     public NoteDocument(String category, String subject, NoteDocumentStructure structure, String workspaceId) {
         this.category = category;
         this.subject = subject;
