@@ -44,6 +44,12 @@ public class NoteDocumentManager {
             List<Tag> tags = tagParser.parse(noteDocText);
             for (Tag tag: tags) {
                 System.out.println("Tag: " + tag.getStartTextOffset() + ": " + tag.getSummaryText());
+                Map<String, String> nameValues = tag.getNameValues();
+                if (nameValues != null) {
+                    nameValues.forEach((name, value) -> {
+                        System.out.println(name + ": " + value);
+                    });
+                }
             }
         }
         System.out.println("Finished");

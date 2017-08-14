@@ -1,9 +1,6 @@
 package com.thoughtpal.func;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -67,7 +64,6 @@ public class TagParser {
         tagTypeMap.put(beginDataTagPtrn, Tag.TagType.DataTag);
         tagTypeMap.put(beginDataLinkTagPtrn, Tag.TagType.DataLink);
         tagTypeMap.put(beginSourceTagPtrn, Tag.TagType.SourceTag);
-        tagTypeMap.put(beginNameValuePairsPtrn, Tag.TagType.NameValuePairs);
 
         /*  Can't cache, because of nested Tags !!
         tagParserMap.put(Tag.TagType.TextTag, tagParserFSM);
@@ -100,19 +96,21 @@ public class TagParser {
     }
 
     private class ParserState_New {
-        NoteDocumentText    noteDocText;
-        String[] lines;
-        int      ix_lines;
-        int		 noteOffset;
-        String[] words;
-        int      ix_words;
-        int 	 tagId;
-        List<Tag>   tags;
+        private NoteDocumentText    noteDocText;
+        private String[] lines;
+        private int      ix_lines;
+        private int		 noteOffset;
+        private String[] words;
+        private int      ix_words;
+        private int 	 tagId;
+        private List<Tag>   tags;
 
         // Current Tag
-        protected Tag		tag;
-        protected boolean	isSummaryTextCaptured = false;
-        protected int		startTagLine;
+        private Tag		    tag;        // ALERT: Only set through setTag() !!
+        private Stack<Tag>  tagStack = new Stack<>();
+
+        private boolean	    isSummaryTextCaptured = false;
+        //private int		startTagLine;
 
 
         public ParserState_New(NoteDocumentText noteDocText) {
@@ -127,17 +125,25 @@ public class TagParser {
 
         // TODO: Move these functions to the Parser, so this class only maintains state ?
 
-        public void startTag(Tag tag) {
-            tag.setId(Integer.toString(tagId++));    // TODO: Set by Repo
-            tag.setStartTextOffset(noteOffset - words[ix_words].length() + 1);
+        public void setTag(Tag tag) {
+            this.tag = tag;
+            this.tagStack.push(tag);
+            this.tag.setId(Integer.toString(tagId++));    // TODO: Set by Repo
+            this.tag.setStartTextOffset(noteOffset - words[ix_words].length() + 1);
         }
 
         public void finishTag() {
+            if (tag == null) {
+                System.out.println("stop here");
+            }
             if (tag.getSummaryText() == null) {
                 tag.setSummaryText("..");	// TODO: replace with logic
             }
             tag.setEndTextOffset(noteOffset);
             tags.add(tag);
+
+            tag = tagStack.pop();
+            isSummaryTextCaptured = false;
         }
 
         public void nextLine() {
@@ -232,23 +238,24 @@ public class TagParser {
             }
         }
 
-        protected NoteTextParserFSM_New getOrCreateParserFSM() {
+        final protected NoteTextParserFSM_New getOrCreateParserFSM() {
             String word = parserState.getWord();
             Matcher matcher;
             for (Pattern pattern : beginPatternList) {
-                // TODO: Consider putting NVP logic here; but just if parsing a Tag, not open text ...
-
                 matcher = pattern.matcher(word);
                 if (matcher.find()) {		// TODO: Or use matcher.find(arg0) ??
                     Tag.TagType tagType = tagTypeMap.get(pattern);
-                    // TODO: Check for null / exception
+                    if (tagType != null) {
+                        parserState.setTag( Tag.builder()
+                                .workspaceId(parserState.noteDocText.getWorkspaceId()).tagType(tagType)
+                                .startTextOffset(parserState.noteOffset).build());
 
-                    parserState.tag = Tag.builder()
-                            .workspaceId(parserState.noteDocText.getWorkspaceId()).tagType(tagType)
-                            .startTextOffset(parserState.noteOffset).build();
-
-                    // TODO: return correct NoteTextParserFSM_New
-                    return createParser(pattern);
+                        // TODO: return correct NoteTextParserFSM_New
+                        return createParser(pattern);
+                    }
+                    else if (pattern == beginNameValuePairsPtrn) {
+                        return new ParseNameValuePairsFSM_New(this);
+                    }
                 }
             }
             return this;
@@ -329,6 +336,10 @@ public class TagParser {
             if (parser == this) {
                 if (parserState.isSummaryTextCaptured == false) {
                     // TODO: Generalize to handle case where summary text is after ":\n"
+                    if (parserState.tag == null) {
+                        System.out.println("Probably found a missing multi-line tag end token at line (" + parserState.ix_lines + ")");
+                        System.exit(-1);
+                    }
                     parserState.tag.setSummaryText(calcTagSummaryText());
                     parserState.isSummaryTextCaptured = true;
                 }
@@ -367,10 +378,13 @@ public class TagParser {
         }
 
         private void parseNameValuePairs(Tag tag, String nameValuesStr) {
-            String[] parts = nameValuesStr.split("[ ]*=[ ]*");
-            String name = null;
-            String value = null;
+            //String[] parts = nameValuesStr.split("[ ]*=[ ]*");
+            String[] parts = nameValuesStr.split("\\|");
+            Map<String, String> nameValues = new HashMap<String, String>();
             for (int ix = 0; ix < parts.length; ix++) {
+                String[] nameValue = parts[ix].split("=");
+                nameValues.put(nameValue[0].trim(), nameValue[1].trim());
+                /*
                 if (ix > 0) {
                     int pipePosnValue = parts[ix].lastIndexOf('|');
                     int spacePosnValue = parts[ix].lastIndexOf(' ');
@@ -383,8 +397,7 @@ public class TagParser {
                     }
                 }
                 if (name != null && value != null) {
-                    //TODO: implement:
-                    // nameValues.put(name, value);
+                    nameValues.put(name, value);
                     System.out.println(ix + ": name (" + name + ") value (" + value + ")");
                 }
                 int spacePosnName = parts[ix].lastIndexOf(' ');
@@ -392,10 +405,11 @@ public class TagParser {
                     name = parts[ix].substring(spacePosnName, parts[ix].length()).trim();
                 } else {
                     name = parts[ix].trim();
-                }
+                }*/
 
                 //System.out.println(ix + " (" + parts[ix] + ")");
             }
+            parserState.tag.setNameValues(nameValues);
         }
 
         protected boolean parserEndCondition() {

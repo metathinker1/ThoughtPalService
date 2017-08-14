@@ -22,14 +22,12 @@ public class Tag {
     // DRY Violation Optimization: to support scoped search in persistent store
 	private String	summaryText;
 
-	/* Backlog:
-	private Map<String, Object> 	nameValues = new HashMap<String, Object>();
-    */
+	private Map<String, String> 	nameValues = new HashMap<String, String>();
 
 	//private static Logger logger = Logger.getLogger(Tag.class);
 
     public enum TagType {
-        DataTag, DataLink, TextTag, TextLink, Task, SourceTag, NameValuePairs
+        DataTag, DataLink, TextTag, TextLink, Task, SourceTag
     }
 
     @Builder
