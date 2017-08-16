@@ -105,12 +105,8 @@ public class TagParser {
         private int 	 tagId;
         private List<Tag>   tags;
 
-        // Current Tag
-        private Tag		    tag;        // ALERT: Only set through setTag() !!
+        // Still needed ?
         private Stack<Tag>  tagStack = new Stack<>();
-
-        private boolean	    isSummaryTextCaptured = false;
-        //private int		startTagLine;
 
 
         public ParserState_New(NoteDocumentText noteDocText) {
@@ -125,14 +121,13 @@ public class TagParser {
 
         // TODO: Move these functions to the Parser, so this class only maintains state ?
 
-        public void setTag(Tag tag) {
-            this.tag = tag;
-            this.tagStack.push(tag);
-            this.tag.setId(Integer.toString(tagId++));    // TODO: Set by Repo
-            this.tag.setStartTextOffset(noteOffset - words[ix_words].length() + 1);
+        public void startTag(Tag tag) {
+            //this.tagStack.push(tag);
+            tag.setId(Integer.toString(tagId++));    // TODO: Set by Repo
+            tag.setStartTextOffset(noteOffset - words[ix_words].length() + 1);
         }
 
-        public void finishTag() {
+        public void finishTag(Tag tag) {
             if (tag == null) {
                 System.out.println("stop here");
             }
@@ -142,8 +137,8 @@ public class TagParser {
             tag.setEndTextOffset(noteOffset);
             tags.add(tag);
 
-            tag = tagStack.pop();
-            isSummaryTextCaptured = false;
+            //tag = tagStack.pop();
+            //isSummaryTextCaptured = false;
         }
 
         public void nextLine() {
@@ -214,6 +209,7 @@ public class TagParser {
     // TODO: Rename: TagParserFSM
     private interface NoteTextParserFSM_New {
         NoteTextParserFSM_New parseNextWord();
+        void setTag(Tag tag);
     }
 
 
@@ -221,10 +217,18 @@ public class TagParser {
     private abstract class BaseParserFSM_New implements NoteTextParserFSM_New {
         protected NoteTextParserFSM_New parentParser = null;
 
+        // Design: These state variables must be kept with Parser objects because of Tag nesting
+        protected Tag		    tag;
+        protected boolean	    isSummaryTextCaptured = false;
+        //private int		startTagLine;
+
         public BaseParserFSM_New(NoteTextParserFSM_New parent) {
             this.parentParser = parent;
         }
 
+        public void setTag(Tag tag) {
+            this.tag = tag;
+        }
 
         protected boolean parserEndCondition() {
             String word = parserState.getWord();
@@ -246,12 +250,15 @@ public class TagParser {
                 if (matcher.find()) {		// TODO: Or use matcher.find(arg0) ??
                     Tag.TagType tagType = tagTypeMap.get(pattern);
                     if (tagType != null) {
-                        parserState.setTag( Tag.builder()
+                        Tag newTag = Tag.builder()
                                 .workspaceId(parserState.noteDocText.getWorkspaceId()).tagType(tagType)
-                                .startTextOffset(parserState.noteOffset).build());
+                                .startTextOffset(parserState.noteOffset).build();
+                        parserState.startTag(newTag);
 
                         // TODO: return correct NoteTextParserFSM_New
-                        return createParser(pattern);
+                        NoteTextParserFSM_New nextParser = createParser(pattern);
+                        nextParser.setTag(newTag);
+                        return nextParser;
                     }
                     else if (pattern == beginNameValuePairsPtrn) {
                         return new ParseNameValuePairsFSM_New(this);
@@ -328,20 +335,20 @@ public class TagParser {
 
         public NoteTextParserFSM_New parseNextWord() {
             if (parserEndCondition()) {
-                parserState.finishTag();
+                parserState.finishTag(tag);
                 return parentParser;
             }
 
             NoteTextParserFSM_New parser = getOrCreateParserFSM();
             if (parser == this) {
-                if (parserState.isSummaryTextCaptured == false) {
+                if (isSummaryTextCaptured == false) {
                     // TODO: Generalize to handle case where summary text is after ":\n"
-                    if (parserState.tag == null) {
+                    if (tag == null) {
                         System.out.println("Probably found a missing multi-line tag end token at line (" + parserState.ix_lines + ")");
                         System.exit(-1);
                     }
-                    parserState.tag.setSummaryText(calcTagSummaryText());
-                    parserState.isSummaryTextCaptured = true;
+                    tag.setSummaryText(calcTagSummaryText());
+                    isSummaryTextCaptured = true;
                 }
                 //processWord();
             }
@@ -365,8 +372,8 @@ public class TagParser {
                     word = word.substring(0, word.length() - 1);
                 }
                 nameValuesText.append(word);
-                if (parserState.tag != null) {
-                    parseNameValuePairs(parserState.tag, nameValuesText.toString());
+                if (tag != null) {
+                    parseNameValuePairs(tag, nameValuesText.toString());
                 }
                 return parentParser;
             } else {
@@ -409,7 +416,7 @@ public class TagParser {
 
                 //System.out.println(ix + " (" + parts[ix] + ")");
             }
-            parserState.tag.setNameValues(nameValues);
+            tag.setNameValues(nameValues);
         }
 
         protected boolean parserEndCondition() {
