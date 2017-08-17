@@ -1,9 +1,7 @@
-package com.thoughtpal.model.note;
+package com.thoughtpal.model.notedoc;
 
 import lombok.Builder;
 import lombok.Data;
-
-import java.util.List;
 
 /*
  *  TODO: Refactor as Bean; move display functions and state to another class; remove reference to parser
@@ -105,12 +103,12 @@ public class NoteDocument {
         StringBuffer buf = new StringBuffer();
         buf.append("<form>");
         buf.append("<p>");
-        for (Note note : getNotes()) {
-            if (isDisplayableOutlineLevel(note.getLocationTag())) {
+        for (Note notedoc : getNotes()) {
+            if (isDisplayableOutlineLevel(notedoc.getLocationTag())) {
                 buf.append("<a href=\"");
                 buf.append("Expand");
                 buf.append("=");
-                buf.append(note.getId());
+                buf.append(notedoc.getId());
                 buf.append("\"");
                 buf.append(">");
                 buf.append("+ ");
@@ -119,26 +117,26 @@ public class NoteDocument {
                 buf.append("<a href=\"");
                 buf.append("Note");
                 buf.append("=");
-                buf.append(note.getId());
+                buf.append(notedoc.getId());
                 buf.append("\"");
                 //buf.append(" nowrap=\"true\"");
                 buf.append(">");
-                buf.append(note.getLocationTag());
+                buf.append(notedoc.getLocationTag());
                 buf.append("</a>");
 
-                //buf.append(note.getLocationTag());
+                //buf.append(notedoc.getLocationTag());
                 buf.append(": ");
-                buf.append(convertToSafeText(note.getSummaryText()));
+                buf.append(convertToSafeText(notedoc.getSummaryText()));
                 buf.append("<BR></BR>");
                 ///buf.append("<BR></BR>");
                 if (isDisplayTags) {
-                    List<Tag> tags = note.getTags();
+                    List<Tag> tags = notedoc.getTags();
                     for (Tag tag: tags) {
                         buf.append("    ");
                         buf.append("<a href=\"");
                         buf.append("Tag");
                         buf.append("=");
-                        buf.append(note.getId());
+                        buf.append(notedoc.getId());
                         buf.append(":");
                         buf.append(tag.getId());
                         buf.append("\"");
@@ -199,29 +197,29 @@ public class NoteDocument {
         StringBuffer buf = new StringBuffer();
         buf.append("<form>");
         buf.append("<p>");
-        for (Note note : getNotes()) {
+        for (Note notedoc : getNotes()) {
             buf.append("<a href=\"");
             buf.append("Note");
             buf.append("=");
-            buf.append(note.getId());
+            buf.append(notedoc.getId());
             buf.append("\"");
             //buf.append(" nowrap=\"true\"");
             buf.append(">");
-            buf.append(note.getLocationTag());
+            buf.append(notedoc.getLocationTag());
             buf.append("</a>");
 
-            //buf.append(note.getLocationTag());
+            //buf.append(notedoc.getLocationTag());
             buf.append(": ");
-            buf.append(convertToSafeText(note.getSummaryText()));
+            buf.append(convertToSafeText(notedoc.getSummaryText()));
             buf.append("<BR></BR>");
             buf.append("<BR></BR>");
-            List<Tag> tags = note.getTags();
+            List<Tag> tags = notedoc.getTags();
             for (Tag tag: tags) {
                 buf.append("    ");
                 buf.append("<a href=\"");
                 buf.append("Tag");
                 buf.append("=");
-                buf.append(note.getId());
+                buf.append(notedoc.getId());
                 buf.append(":");
                 buf.append(tag.getId());
                 buf.append("\"");
@@ -261,29 +259,29 @@ public class NoteDocument {
         StringBuffer buf = new StringBuffer();
         buf.append("<form>");
         buf.append("<p>");
-        for (Note note : getNotes()) {
+        for (Note notedoc : getNotes()) {
             buf.append("<a href=\"");
             buf.append("Note");
             buf.append("=");
-            buf.append(note.getId());
+            buf.append(notedoc.getId());
             buf.append("\"");
             //buf.append(" nowrap=\"true\"");
             buf.append(">");
-            buf.append(note.getLocationTag());
+            buf.append(notedoc.getLocationTag());
             buf.append("</a>");
 
-            //buf.append(note.getLocationTag());
+            //buf.append(notedoc.getLocationTag());
             buf.append(": ");
-            buf.append(convertToSafeText(note.getSummaryText()));
+            buf.append(convertToSafeText(notedoc.getSummaryText()));
             buf.append("<BR></BR>");
             buf.append("<BR></BR>");
-            List<Tag> tags = note.getTags();
+            List<Tag> tags = notedoc.getTags();
             for (Tag tag: tags) {
                 buf.append("    ");
                 buf.append("<a href=\"");
                 buf.append("Tag");
                 buf.append("=");
-                buf.append(note.getId());
+                buf.append(notedoc.getId());
                 buf.append(":");
                 buf.append(tag.getId());
                 buf.append("\"");

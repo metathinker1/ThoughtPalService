@@ -1,8 +1,7 @@
 package com.thoughtpal.func;
 
-import com.thoughtpal.model.note.Note;
-import com.thoughtpal.model.note.NoteDocumentText;
-import org.apache.logging.log4j.Logger;
+import com.thoughtpal.model.notedoc.Note;
+import com.thoughtpal.model.notedoc.NoteDocumentText;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -31,8 +30,8 @@ public class OutlineNoteParser implements  NoteParser {
             Matcher matcher = beginOutlineNoteChunkPtrn.matcher(line);
             if (matcher.find()) {
                 if (note != null) {
-                    note.setEndNoteOffset(noteOffset - 1);
-                    //noteBodyTextParser.parseNoteBodyText(note, noteBodyText.toString());
+                    note.setEndOffset(noteOffset - 1);
+                    //noteBodyTextParser.parseNoteBodyText(notedoc, noteBodyText.toString());
                 }
 
                 line = line.trim();
@@ -64,8 +63,8 @@ public class OutlineNoteParser implements  NoteParser {
             } else if (parseSummaryText) {
                 parseSummaryText = false;
                 note.setSummaryText(line);
-                //note.setStartSummaryTextPosn(noteOffset);
-                // note.setStartTextPosn(endTextPosn)
+                //notedoc.setStartSummaryTextPosn(noteOffset);
+                // notedoc.setStartTextPosn(endTextPosn)
 
             } else {
                 // Case: text preceeding first Note;  In the future this could also be "free text" between Notes
@@ -77,8 +76,8 @@ public class OutlineNoteParser implements  NoteParser {
             noteOffset += line.length() + 1;
         }
         if (note != null) {
-            note.setEndNoteOffset(noteOffset);
-            //noteBodyTextParser.parseNoteBodyText(note, noteBodyText.toString());
+            note.setEndOffset(noteOffset);
+            //noteBodyTextParser.parseNoteBodyText(notedoc, noteBodyText.toString());
         }
         return notes;
     }
@@ -105,7 +104,7 @@ public class OutlineNoteParser implements  NoteParser {
 		int notePosn = 0;
 		String[] lines = noteDocText.split("\\n");
 
-		Note note = null;
+		Note notedoc = null;
 		StringBuffer	noteBodyText = null;
 		boolean parseSummaryText = false;
 		Stack<Integer> outlineLocation = new Stack<Integer>();
@@ -113,11 +112,11 @@ public class OutlineNoteParser implements  NoteParser {
 		for (String line : lines) {
 			Matcher matcher = beginOutlineNoteChunkPtrn.matcher(line);
 			if (matcher.find()) {
-				if (note != null) {
-					note.setEndTextPosn(notePosn - 1);
-					noteBodyTextParser.parseNoteBodyText(note, noteBodyText.toString());
+				if (notedoc != null) {
+					notedoc.setEndTextPosn(notePosn - 1);
+					noteBodyTextParser.parseNoteBodyText(notedoc, noteBodyText.toString());
 				}
-				note = new Note();
+				notedoc = new Note();
 				noteBodyText = new StringBuffer();
 				outlineLevel = Integer.parseInt(line.substring(6, line.length() - 1));
 				if (outlineLevel > outlineLocation.size()) {
@@ -131,15 +130,15 @@ public class OutlineNoteParser implements  NoteParser {
 					Integer val = outlineLocation.pop();
 					outlineLocation.push(val+1);
 				}
-				note.setLocationTag(createLabel(outlineLocation));
-				note.setStartTextPosn(notePosn);
-				note.setId(Integer.toString(noteObjId++));
-				noteDoc.addNote(note);
+				notedoc.setLocationTag(createLabel(outlineLocation));
+				notedoc.setStartTextPosn(notePosn);
+				notedoc.setId(Integer.toString(noteObjId++));
+				noteDoc.addNote(notedoc);
 				parseSummaryText = true;
 			} else if (parseSummaryText) {
 				parseSummaryText = false;
-				note.setSummaryText(line);
-				// note.setStartTextPosn(endTextPosn)
+				notedoc.setSummaryText(line);
+				// notedoc.setStartTextPosn(endTextPosn)
 
 			} else {
 				// Case: text preceeding first Note;  In the future this could also be "free text" between Notes
@@ -150,9 +149,9 @@ public class OutlineNoteParser implements  NoteParser {
 			}
 			notePosn += line.length() + 1;
 		}
-		if (note != null) {
-			note.setEndTextPosn(notePosn);
-			noteBodyTextParser.parseNoteBodyText(note, noteBodyText.toString());
+		if (notedoc != null) {
+			notedoc.setEndTextPosn(notePosn);
+			noteBodyTextParser.parseNoteBodyText(notedoc, noteBodyText.toString());
 		}
 	}*/
 

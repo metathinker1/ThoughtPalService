@@ -3,17 +3,16 @@ package com.thoughtpal.manager;
 import com.thoughtpal.func.NoteParser;
 import com.thoughtpal.func.OutlineNoteParser;
 import com.thoughtpal.func.TagParser;
-import com.thoughtpal.model.note.Note;
-import com.thoughtpal.model.note.NoteDocument;
-import com.thoughtpal.model.note.NoteDocumentText;
-import com.thoughtpal.model.tag.Tag;
+import com.thoughtpal.model.notedoc.Note;
+import com.thoughtpal.model.notedoc.NoteDocument;
+import com.thoughtpal.model.notedoc.NoteDocumentText;
+import com.thoughtpal.model.notedoc.Tag;
 
 import java.io.*;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,11 +38,11 @@ public class NoteDocumentManager {
         if (noteParser != null) {
             List<Note> notes = noteParser.parse(noteDocText);
             for (Note note: notes) {
-                System.out.println("Note: " + note.getStartNoteOffset() + ": " + note.getLabel() + ": " + note.getSummaryText());
+                System.out.println("Note: " + note.getStartOffset() + ": " + note.getLabel() + ": " + note.getSummaryText());
             }
             List<Tag> tags = tagParser.parse(noteDocText);
             for (Tag tag: tags) {
-                System.out.println("Tag: " + tag.getStartTextOffset() + ": " + tag.getSummaryText());
+                System.out.println("Tag: " + tag.getStartOffset() + ": " + tag.getSummaryText());
                 Map<String, String> nameValues = tag.getNameValues();
                 if (nameValues != null) {
                     nameValues.forEach((name, value) -> {

@@ -1,4 +1,4 @@
-package com.thoughtpal.model.tag;
+package com.thoughtpal.model.notedoc;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -8,7 +8,7 @@ import lombok.Data;
 
 
 @Data
-public class Tag {
+public class Tag implements NoteDocItem {
 
 	// Initial implementation: Reset each time the associated Note is parsed
 	//   TODO: Refactor to be immutable AFTER Metadata Aware Editor has been implemented
@@ -16,8 +16,8 @@ public class Tag {
 	private String  workspaceId;
 
     private TagType tagType;
-	private int		startTextOffset;
-	private int		endTextOffset;
+	private int 	startOffset;
+	private int 	endOffset;
 
     // DRY Violation Optimization: to support scoped search in persistent store
 	private String	summaryText;
@@ -34,7 +34,7 @@ public class Tag {
 	public Tag(String workspaceId, TagType tagType, int startTextOffset) {
     	this.workspaceId = workspaceId;
     	this.tagType = tagType;
-    	this.startTextOffset = startTextOffset;
+    	this.startOffset = startTextOffset;
 	}
 
 	/* Backlog:

@@ -4,9 +4,8 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.thoughtpal.model.note.Note;
-import com.thoughtpal.model.note.NoteDocumentText;
-import com.thoughtpal.model.tag.*;
+import com.thoughtpal.model.notedoc.NoteDocumentText;
+import com.thoughtpal.model.notedoc.Tag;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 //import lombok.extern.slf4j.Slf4j;
@@ -124,7 +123,7 @@ public class TagParser {
         public void startTag(Tag tag) {
             //this.tagStack.push(tag);
             tag.setId(Integer.toString(tagId++));    // TODO: Set by Repo
-            tag.setStartTextOffset(noteOffset - words[ix_words].length() + 1);
+            tag.setStartOffset(noteOffset - words[ix_words].length() + 1);
         }
 
         public void finishTag(Tag tag) {
@@ -134,7 +133,7 @@ public class TagParser {
             if (tag.getSummaryText() == null) {
                 tag.setSummaryText("..");	// TODO: replace with logic
             }
-            tag.setEndTextOffset(noteOffset);
+            tag.setEndOffset(noteOffset);
             tags.add(tag);
 
             //tag = tagStack.pop();
@@ -427,9 +426,9 @@ public class TagParser {
 
     //===========================
 /*
-	public void parseNoteBodyText(Note note, String noteBodyText) {
+	public void parseNoteBodyText(Note notedoc, String noteBodyText) {
 
-        parserState.reset(note, noteBodyText);
+        parserState.reset(notedoc, noteBodyText);
 		
 		NoteTextParserFSM parser = parseOpenTextFSM;
 		while (parserState.ix_lines < parserState.lines.length - 1) {
@@ -447,19 +446,19 @@ public class TagParser {
 		String[] words = null;
 		int ix_lines = -1;
 		int ix_words = -1;	
-		Note	note;
+		Note	notedoc;
 		int		noteBodyTextPosn;   // TODO: Refactor: noteOffset: same as OutlineNoteParser
 		int 	tagObjId = 0;	// Unique only to Note  TODO: Refactor
 
 
         StringBuffer tagText;
 		
-		public void reset(Note note, String noteDocText) {
-			this.note = note;
+		public void reset(Note notedoc, String noteDocText) {
+			this.notedoc = notedoc;
 			this.tagObjId = 0;
 			//lines = noteDocText.split("\\n");
 			lines = lineSplit(noteDocText);
-			this.noteBodyTextPosn = note.getStartSummaryTextPosn() + note.getSummaryText().length();  // Add 1 for '\n' ?
+			this.noteBodyTextPosn = notedoc.getStartSummaryTextPosn() + notedoc.getSummaryText().length();  // Add 1 for '\n' ?
 			ix_lines = -1;
 			/* RW: 2014.11.29: I believe this was a bad idea because this line will never be processed
 			if (lines.length > 0) {
@@ -471,8 +470,8 @@ public class TagParser {
 
 		public void initializeTag(Tag tag) {
 			tag.setId(Integer.toString(tagObjId++));    // TODO: Set by Repo
-			note.addTag(tag);
-			tag.setStartTextOffset(noteBodyTextPosn - words[ix_words].length() + 1);
+			notedoc.addTag(tag);
+			tag.setStartOffset(noteBodyTextPosn - words[ix_words].length() + 1);
 			tagText = new StringBuffer();
 		}
 		

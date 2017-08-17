@@ -1,4 +1,4 @@
-package com.thoughtpal.model.note;
+package com.thoughtpal.model.notedoc;
 
 import lombok.Builder;
 import lombok.Data;
@@ -10,15 +10,15 @@ import lombok.Data;
  */
 
 @Data
-public class Note {
+public class Note implements NoteDocItem {
 
 	// Initial implementation: Reset each time the associated Note is parsed
 	//   TODO: Refactor to be immutable AFTER Metadata Aware Editor has been implemented
 	private String  id;
     private String  workspaceId;
 
-	private int		startNoteOffset;
-	private int		endNoteOffset;
+	private int 	startOffset;
+	private int 	endOffset;
 	private String  label;
 
 	// DRY Violation Optimization: to support scoped search in persistent store
@@ -28,15 +28,15 @@ public class Note {
     @Builder
     public Note(String workspaceId, int startNoteOffset, String summaryText) {
         this.workspaceId = workspaceId;
-        this.startNoteOffset = startNoteOffset;
+        this.startOffset = startNoteOffset;
         this.summaryText = summaryText;
     }
 
     @Builder
 	public Note(String workspaceId, int startNoteOffset, int endNoteOffset, String summaryText) {
 	    this.workspaceId = workspaceId;
-	    this.startNoteOffset = startNoteOffset;
-	    this.endNoteOffset = endNoteOffset;
+	    this.startOffset = startNoteOffset;
+	    this.endOffset = endNoteOffset;
 	    this.summaryText = summaryText;
     }
 	

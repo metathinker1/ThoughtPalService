@@ -1,10 +1,9 @@
 package com.thoughtpal.func;
 
-import com.thoughtpal.model.note.Note;
-import com.thoughtpal.model.note.NoteDocumentText;
+import com.thoughtpal.model.notedoc.Note;
+import com.thoughtpal.model.notedoc.NoteDocumentText;
 
 import java.util.List;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class MeetingJournalNoteParser implements  NoteParser {
@@ -19,28 +18,28 @@ public class MeetingJournalNoteParser implements  NoteParser {
         int notePosn = 0;
         String[] lines = noteDocText.split("\\n");
 
-        Note note = null;
+        Note notedoc = null;
         StringBuffer	noteBodyText = null;
         boolean parseSummaryText = false;
         for (String line : lines) {
             Matcher matcher = beginJournalNoteChunkPtrn.matcher(line);
             if (matcher.find()) {
-                if (note != null) {
-                    note.setEndTextPosn(notePosn - 1);
-                    noteBodyTextParser.parseNoteBodyText(note, noteBodyText.toString());
+                if (notedoc != null) {
+                    notedoc.setEndTextPosn(notePosn - 1);
+                    noteBodyTextParser.parseNoteBodyText(notedoc, noteBodyText.toString());
                 }
                 line = line.trim();
-                note = new Note();
+                notedoc = new Note();
                 noteBodyText = new StringBuffer();
-                note.setLocationTag(line.substring(1, line.length() - 1));
-                note.setStartTextPosn(notePosn);
-                note.setId(Integer.toString(noteObjId++));
-                noteDoc.addNote(note);
+                notedoc.setLocationTag(line.substring(1, line.length() - 1));
+                notedoc.setStartTextPosn(notePosn);
+                notedoc.setId(Integer.toString(noteObjId++));
+                noteDoc.addNote(notedoc);
                 parseSummaryText = true;
             } else if (parseSummaryText) {
                 parseSummaryText = false;
-                note.setSummaryText(line);
-                note.setStartSummaryTextPosn(notePosn);
+                notedoc.setSummaryText(line);
+                notedoc.setStartSummaryTextPosn(notePosn);
 
             } else {
                 // Case: text preceeding first Note;  In the future this could also be "free text" between Notes
@@ -51,9 +50,9 @@ public class MeetingJournalNoteParser implements  NoteParser {
             }
             notePosn += line.length() + 1;
         }
-        if (note != null) {
-            note.setEndTextPosn(notePosn);
-            noteBodyTextParser.parseNoteBodyText(note, noteBodyText.toString());
+        if (notedoc != null) {
+            notedoc.setEndTextPosn(notePosn);
+            noteBodyTextParser.parseNoteBodyText(notedoc, noteBodyText.toString());
         }
         */
         return null;

@@ -1,7 +1,7 @@
 package com.thoughtpal.func;
 
-import com.thoughtpal.model.note.Note;
-import com.thoughtpal.model.note.NoteDocumentText;
+import com.thoughtpal.model.notedoc.Note;
+import com.thoughtpal.model.notedoc.NoteDocumentText;
 
 import java.util.List;
 
