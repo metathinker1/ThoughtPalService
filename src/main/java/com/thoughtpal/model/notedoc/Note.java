@@ -17,8 +17,8 @@ public class Note implements NoteDocItem {
 	private String  id;
     private String  workspaceId;
 
-	private int 	startOffset;
-	private int 	endOffset;
+	private Integer 	startOffset;
+	private Integer 	endOffset;
 	private String  label;
 
 	// DRY Violation Optimization: to support scoped search in persistent store

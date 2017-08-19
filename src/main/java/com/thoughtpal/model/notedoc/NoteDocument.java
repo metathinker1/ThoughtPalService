@@ -3,6 +3,11 @@ package com.thoughtpal.model.notedoc;
 import lombok.Builder;
 import lombok.Data;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 /*
  *  TODO: Refactor as Bean; move display functions and state to another class; remove reference to parser
  */
@@ -15,7 +20,13 @@ public class NoteDocument {
     private String  subject;
     private NoteDocumentStructure   noteDocumentStructure;
 
-    // DRY Violation Optimization: to support scoped search in persistent store
+    private List<Note>          notes = new ArrayList<>();
+    private List<Tag>           tags = new ArrayList<>();
+    private Map<String, Note>   noteMap = new HashMap<>();
+    private Map<String, Tag>    tagMap = new HashMap<>();
+    private List<NoteDocItem>   noteDocItems = new ArrayList<>();
+
+    // DRY Violation Optimization: to support scoped search in persistent store -- Maybe not; maybe double pointer
     private NoteDocumentText    noteDocumentText;
 
     /* TODO: Move
@@ -41,6 +52,15 @@ public class NoteDocument {
         this.subject = subject;
         this.noteDocumentStructure = structure;
         this.workspaceId = workspaceId;
+    }
+
+    public void setNotesAndTags(List<Note> notes, List<Tag> tags) {
+        setNotes(notes);
+        setTags(tags);
+        List<NoteDocItem> noteDocItems = new ArrayList<>();
+        noteDocItems.addAll(notes);
+        noteDocItems.addAll(tags);
+        setNoteDocItems(noteDocItems);
     }
 
     /* TODO: Move

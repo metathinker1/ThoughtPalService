@@ -3,10 +3,7 @@ package com.thoughtpal.manager;
 import com.thoughtpal.func.NoteParser;
 import com.thoughtpal.func.OutlineNoteParser;
 import com.thoughtpal.func.TagParser;
-import com.thoughtpal.model.notedoc.Note;
-import com.thoughtpal.model.notedoc.NoteDocument;
-import com.thoughtpal.model.notedoc.NoteDocumentText;
-import com.thoughtpal.model.notedoc.Tag;
+import com.thoughtpal.model.notedoc.*;
 
 import java.io.*;
 import java.nio.charset.Charset;
@@ -16,6 +13,7 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class NoteDocumentManager {
 
@@ -37,19 +35,9 @@ public class NoteDocumentManager {
         // TODO: change to assert not null ...
         if (noteParser != null) {
             List<Note> notes = noteParser.parse(noteDocText);
-            for (Note note: notes) {
-                System.out.println("Note: " + note.getStartOffset() + ": " + note.getLabel() + ": " + note.getSummaryText());
-            }
             List<Tag> tags = tagParser.parse(noteDocText);
-            for (Tag tag: tags) {
-                System.out.println("Tag: " + tag.getStartOffset() + ": " + tag.getSummaryText());
-                Map<String, String> nameValues = tag.getNameValues();
-                if (nameValues != null) {
-                    nameValues.forEach((name, value) -> {
-                        System.out.println(name + ": " + value);
-                    });
-                }
-            }
+            NoteDocument noteDoc = noteDocText.getNoteDocument();
+            noteDoc.setNotesAndTags(notes, tags);
         }
         System.out.println("Finished");
     }
@@ -73,6 +61,37 @@ public class NoteDocumentManager {
                     .workspaceId("001").noteDocumentId("001").rawText(rawText).build();
 
             tester.parse(noteDocText);
+
+            // TODO: stream from getNoteDocItems; sort; print note and tag differently
+            /*
+            for (Note note: notes) {
+                System.out.println("Note: " + note.getStartOffset() + ": " + note.getLabel() + ": " + note.getSummaryText());
+            }
+            for (Tag tag: tags) {
+                System.out.println("Tag: " + tag.getStartOffset() + ": " + tag.getSummaryText());
+                Map<String, String> nameValues = tag.getNameValues();
+                if (nameValues != null) {
+                    nameValues.forEach((name, value) -> {
+                        System.out.println(name + ": " + value);
+                    });
+                }
+            }*/
+
+            List<NoteDocItem> sortedItems = noteDocText.getNoteDocument().getNoteDocItems().stream()
+                .sorted((NoteDocItem item1, NoteDocItem item2) -> item1.getStartOffset().compareTo(item2.getStartOffset()))
+                .collect(Collectors.toList());
+
+            sortedItems.stream()
+                //.forEach(System.out::println);
+                .forEach(noteDocItem -> {
+                    if (noteDocItem instanceof Note) {
+                        Note note = (Note) noteDocItem;
+                        System.out.println("Note: " + note.getStartOffset() + ": " + note.getLabel() + ": " + note.getSummaryText());
+                    } else {
+                        Tag tag = (Tag) noteDocItem;
+                        System.out.println("Tag: " + tag.getStartOffset() + ": " + tag.getSummaryText());
+                    }
+                });
 
         } catch (IOException e) {
             e.printStackTrace();

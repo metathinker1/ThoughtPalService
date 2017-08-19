@@ -16,8 +16,8 @@ public class Tag implements NoteDocItem {
 	private String  workspaceId;
 
     private TagType tagType;
-	private int 	startOffset;
-	private int 	endOffset;
+	private Integer 	startOffset;
+	private Integer 	endOffset;
 
     // DRY Violation Optimization: to support scoped search in persistent store
 	private String	summaryText;
