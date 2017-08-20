@@ -55,7 +55,7 @@ public class NoteDocumentManager {
     public static void main(String[] args) {
         NoteDocumentManager tester = new NoteDocumentManager();
         try {
-            String filePath = "/Users/robertwood/Project.ThoughtPal/ThoughtPalService/src/main/java/com/thoughtpal/manager/AppDevFW.AWS.nodoc";
+            String filePath = "/Users/robertwood/Project.ThoughtPal/ThoughtPalService/src/main/java/com/thoughtpal/manager/AppDevFW_1.AWS.nodoc";
             String rawText = tester.readFileAsString(filePath, StandardCharsets.UTF_8);
             NoteDocumentText noteDocText = NoteDocumentText.builder()
                     .workspaceId("001").noteDocumentId("001").rawText(rawText).build();

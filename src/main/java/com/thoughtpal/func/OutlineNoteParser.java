@@ -26,7 +26,9 @@ public class OutlineNoteParser implements  NoteParser {
         boolean parseSummaryText = false;
         Stack<Integer> outlineLocation = new Stack<Integer>();
         int outlineLevel = 0;
+        int lineLength = 0;
         for (String line : lines) {
+            lineLength = line.length();     // Capture before modifications
             Matcher matcher = beginOutlineNoteChunkPtrn.matcher(line);
             if (matcher.find()) {
                 if (note != null) {
@@ -36,7 +38,7 @@ public class OutlineNoteParser implements  NoteParser {
 
                 line = line.trim();
                 note = Note.builder().workspaceId(noteDocText.getWorkspaceId())
-                        .startNoteOffset(noteOffset).summaryText(line).build();
+                        .startNoteOffset(noteOffset + 1).summaryText(line).build();
                 noteBodyText = new StringBuffer();
                 try {
                     outlineLevel = Integer.parseInt(line.substring(6, line.length() - 1));
@@ -73,7 +75,7 @@ public class OutlineNoteParser implements  NoteParser {
                     noteBodyText.append("\n");
                 }
             }
-            noteOffset += line.length() + 1;
+            noteOffset += lineLength + 1;   // Add 1 for \n that is eaten by split()
         }
         if (note != null) {
             note.setEndOffset(noteOffset);

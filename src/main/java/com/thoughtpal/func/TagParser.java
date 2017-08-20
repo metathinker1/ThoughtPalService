@@ -89,6 +89,8 @@ public class TagParser {
                     System.out.println("stop here");
                 }
             }
+            // Move noteOffset to after the last word + newline
+            parserState.noteOffset += parserState.words[parserState.words.length - 1].length() + 1;
         }
 
         return parserState.tags;
@@ -99,7 +101,8 @@ public class TagParser {
         private String[] lines;
         private int      ix_lines;
         private int		 noteOffset;
-        private String[] words;
+        private String[]  words;
+        private Integer[] wordOffsets;
         private int      ix_words;
         private int 	 tagId;
         private List<Tag>   tags;
@@ -107,11 +110,20 @@ public class TagParser {
         // Still needed ?
         private Stack<Tag>  tagStack = new Stack<>();
 
+        private class Combo {
+            String[]  words;
+            Integer[] wordOffsets;
+
+            public Combo(String[] words, Integer[] wordOffsets) {
+                this.words = words;
+                this.wordOffsets = wordOffsets;
+            }
+        }
 
         public ParserState_New(NoteDocumentText noteDocText) {
             this.noteDocText = noteDocText;
             lines = noteDocText.getRawText().split("\\n");
-            ix_lines = 0;
+            ix_lines = -1;      // Initial condition
             noteOffset = 0;
             tagId = 0;
             tags  = new ArrayList<>();
@@ -123,7 +135,8 @@ public class TagParser {
         public void startTag(Tag tag) {
             //this.tagStack.push(tag);
             tag.setId(Integer.toString(tagId++));    // TODO: Set by Repo
-            tag.setStartOffset(noteOffset - words[ix_words].length() + 1);
+            //tag.setStartOffset(noteOffset - words[ix_words].length() + 1);
+            tag.setStartOffset(wordOffsets[ix_words]);
         }
 
         public void finishTag(Tag tag) {
@@ -142,15 +155,29 @@ public class TagParser {
 
         public void nextLine() {
             ix_lines++;
+            if (ix_lines == 8) {
+                System.out.println("stop here");
+            }
+//            if (ix_lines == 0) {
+//                noteOffset = 0;
+//            } else {
+//                noteOffset += words[words.length - 1].length();
+//            }
+//            noteOffset += 1;    // for newline
+
             //words = lines[ix_lines].split(" |:");
-            words = wordSplit(lines[ix_lines]);
+            Combo wordsAndOffsets = wordSplit(lines[ix_lines]);
+            words = wordsAndOffsets.words;
+            wordOffsets = wordsAndOffsets.wordOffsets;
             ix_words = -1;
         }
 
         public void nextWord() {
             ix_words++;
             // Hack to get the location approximately correct, but need to find more accurate logic
-            noteOffset += words[ix_words].length();	// Add 1 for ' ' ?
+            //noteOffset += words[ix_words].length();	// Add 1 for ' ' ?
+            noteOffset = wordOffsets[ix_words];
+            System.out.println("ix_words (" + ix_words + "), noteOffset (" + noteOffset + "), words[] (" + words[ix_words] + "), wordsOffset[] (" + wordOffsets[ix_words] + ")");
         }
 
 
@@ -162,27 +189,48 @@ public class TagParser {
             return words[ix_words];
         }
 
-        private String[] wordSplit(String line) {
+        // TRICKY: noteOffset will change as the line is processed in nextWord(),
+        //   but it's used here before the line processing begins
+        private Combo wordSplit(String line) {
             // {TextTag:First Tag: some things}
+            if (line.contains("API.")) {
+                //System.out.println("stop here");
+            }
             if (line.length() == 0) {
-                String[] empty = {""};
-                return empty;
+                String[] words = {""};
+                Integer[] wordOffsets = {noteOffset};
+                return new Combo(words, wordOffsets);
             }
             List<String> words = new ArrayList<String>();
+            List<Integer> wordOffsets = new ArrayList<>();
             char[] chars = line.toCharArray();
             int lastWordBeginIx = 0;
+            int lastWordEndIx = 0;
             for (int ix = 0; ix < chars.length; ix++) {
+                if (chars[ix] == '.') {
+                    //System.out.println("stop here");
+                }
                 if (chars[ix] == ' ' && ix > lastWordBeginIx) {
                     words.add(line.substring(lastWordBeginIx, ix));
+                    wordOffsets.add(noteOffset + lastWordBeginIx);
                     lastWordBeginIx = ix;  // + 1
                 } else if (chars[ix] == ':') {
                     words.add(line.substring(lastWordBeginIx, ix + 1));
+                    wordOffsets.add(noteOffset + lastWordBeginIx);
                     lastWordBeginIx = ix + 1;
                 } else if (ix == chars.length - 1) {
                     words.add(line.substring(lastWordBeginIx, ix + 1));
+                    wordOffsets.add(noteOffset + lastWordBeginIx);
                 }
             }
-            return words.toArray(new String[words.size()]);
+            // EdgeCase: last char of line is ' '
+            if (chars[chars.length - 1] == ' ') {
+                words.add(new String(" "));
+                wordOffsets.add(noteOffset + lastWordBeginIx);
+            }
+
+            Combo wordsAndOffsets = new Combo(words.toArray(new String[words.size()]), wordOffsets.toArray(new Integer[wordOffsets.size()]));
+            return wordsAndOffsets;
         }
 
         private String[] lineSplit(String noteBody) {
@@ -213,13 +261,14 @@ public class TagParser {
 
 
     // TODO: Rename: TagParserFSM ?
+    // TODO: All Tag related stuff: push down to ParseTagFSM_New !!
     private abstract class BaseParserFSM_New implements NoteTextParserFSM_New {
         protected NoteTextParserFSM_New parentParser = null;
 
         // Design: These state variables must be kept with Parser objects because of Tag nesting
         protected Tag		    tag;
         protected boolean	    isSummaryTextCaptured = false;
-        //private int		startTagLine;
+        private int		        startTagLine;   // To make sure parser end condition "}\n" only applied on first line of tag
 
         public BaseParserFSM_New(NoteTextParserFSM_New parent) {
             this.parentParser = parent;
@@ -228,11 +277,14 @@ public class TagParser {
         public void setTag(Tag tag) {
             this.tag = tag;
         }
+        public void setStartTagLine(int startTagLine) {
+            this.startTagLine = startTagLine;
+        }
 
         protected boolean parserEndCondition() {
             String word = parserState.getWord();
             Matcher multiLineEndMatcher = endMultiLineTagPtrn.matcher(word);
-            if (/*parserState.ix_lines == parserState.startTagLine &&*/ (word.endsWith("}") || word.endsWith("}\n"))) {
+            if (parserState.ix_lines == startTagLine && (word.endsWith("}") || word.endsWith("}\n"))) {
                 return true;
             } else if (multiLineEndMatcher.find()) {
                 return true;
@@ -269,22 +321,22 @@ public class TagParser {
 
         private NoteTextParserFSM_New createParser(Pattern pattern){
             if (pattern == beginTextTagPtrn) {
-                return new ParseTagFSM_New(this);
+                return new ParseTagFSM_New(this, parserState.ix_lines);
             }
             else if (pattern == beginTextLinkTagPtrn) {
-                return new ParseTagFSM_New(this);
+                return new ParseTagFSM_New(this, parserState.ix_lines);
             }
             else if (pattern == beginDataTagPtrn) {
-                return new ParseTagFSM_New(this);
+                return new ParseTagFSM_New(this, parserState.ix_lines);
             }
             else if (pattern == beginDataLinkTagPtrn) {
-                return new ParseTagFSM_New(this);
+                return new ParseTagFSM_New(this, parserState.ix_lines);
             }
             else if (pattern == beginSourceTagPtrn) {
-                return new ParseTagFSM_New(this);
+                return new ParseTagFSM_New(this, parserState.ix_lines);
             }
             else if (pattern == beginActiveTaskTagPtrn) {
-                return new ParseTagFSM_New(this);
+                return new ParseTagFSM_New(this, parserState.ix_lines);
             }
             else if (pattern == beginNameValuePairsPtrn) {
                 return new ParseNameValuePairsFSM_New(this);
@@ -328,8 +380,9 @@ public class TagParser {
 
     private class ParseTagFSM_New extends BaseParserFSM_New {
 
-        public ParseTagFSM_New(NoteTextParserFSM_New parentParser) {
+        public ParseTagFSM_New(NoteTextParserFSM_New parentParser, int startTagLine) {
             super(parentParser);
+            setStartTagLine(startTagLine);
         }
 
         public NoteTextParserFSM_New parseNextWord() {
