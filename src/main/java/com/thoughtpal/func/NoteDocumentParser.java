@@ -1,8 +1,5 @@
-package com.thoughtpal.manager;
+package com.thoughtpal.func;
 
-import com.thoughtpal.func.NoteParser;
-import com.thoughtpal.func.OutlineNoteParser;
-import com.thoughtpal.func.TagParser;
 import com.thoughtpal.model.notedoc.*;
 
 import java.io.*;
@@ -15,13 +12,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class NoteDocumentManager {
+public class NoteDocumentParser {
 
     private Map<NoteDocument.NoteDocumentStructure, NoteParser> noteParserMap =
             new HashMap<NoteDocument.NoteDocumentStructure, NoteParser>();
     private TagParser tagParser = new TagParser();
 
-    public NoteDocumentManager() {
+    public NoteDocumentParser() {
         noteParserMap.put(NoteDocument.NoteDocumentStructure.Outline, new OutlineNoteParser());
 
         tagParser.initialize();
@@ -51,11 +48,11 @@ public class NoteDocumentManager {
         return new String(encoded, encoding);
     }
 
-
+    // TODO: Move to Unit Test
     public static void main(String[] args) {
-        NoteDocumentManager tester = new NoteDocumentManager();
+        NoteDocumentParser tester = new NoteDocumentParser();
         try {
-            String filePath = "/Users/robertwood/Project.ThoughtPal/ThoughtPalService/src/main/java/com/thoughtpal/manager/AppDevFW_1.AWS.nodoc";
+            String filePath = "/Users/robertwood/Project.ThoughtPal/ThoughtPalService/src/main/java/com/thoughtpal/func/AppDevFW_1.AWS.nodoc";
             String rawText = tester.readFileAsString(filePath, StandardCharsets.UTF_8);
             NoteDocumentText noteDocText = NoteDocumentText.builder()
                     .workspaceId("001").noteDocumentId("001").rawText(rawText).build();
