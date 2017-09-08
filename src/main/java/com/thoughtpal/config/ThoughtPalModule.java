@@ -6,6 +6,8 @@ import com.google.inject.servlet.ServletModule;
 import com.sun.jersey.guice.spi.container.servlet.GuiceContainer;
 import com.thoughtpal.client.NoteDocsClient;
 import com.thoughtpal.endpoints.DefaultResource;
+import com.thoughtpal.func.NoteDocSummaryRenderer;
+import com.thoughtpal.func.NoteDocumentParser;
 import com.thoughtpal.func.NoteDocumentSummarizer;
 import org.eclipse.jetty.servlet.DefaultServlet;
 
@@ -27,5 +29,11 @@ public class ThoughtPalModule extends ServletModule {
     @Singleton
     public DefaultResource getDefaultResource(NoteDocsClient noteDocsClient, NoteDocumentSummarizer noteDocSummarizer) {
         return new DefaultResource(noteDocsClient, noteDocSummarizer);
+    }
+
+    @Provides
+    @Singleton
+    public NoteDocumentSummarizer getNoteDocumentSummarizer(NoteDocumentParser noteDocParser, NoteDocSummaryRenderer noteDocSummRenderer) {
+        return new NoteDocumentSummarizer(noteDocParser, noteDocSummRenderer);
     }
 }

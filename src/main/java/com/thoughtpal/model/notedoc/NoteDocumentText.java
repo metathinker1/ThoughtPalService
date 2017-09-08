@@ -13,12 +13,15 @@ import lombok.Data;
 @Data
 //@Slf4j
 public class NoteDocumentText {
-	private String  workspaceId;
-	private String  noteDocumentId;
+	private final String  workspaceId;
+	private final String  noteDocumentId;
 
-	private String 	rawText;
+	private final String 	rawText;
 
 	// DRY Violation Optimization: to support scoped search in persistent store
+	// TODO: Design: Consider: This breaks Functional Paradigm, so is it useful?
+    //         Better to use common noteDocumentId in related NoteDocumentText and NoteDocument objects ?
+    //         Allows NoteDocumentText to be Immutable after initial construction
 	private NoteDocument	noteDocument;
 
 	@Builder

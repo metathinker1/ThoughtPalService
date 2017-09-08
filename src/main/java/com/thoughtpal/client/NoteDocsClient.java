@@ -34,7 +34,10 @@ public class NoteDocsClient
 
             HttpEntity entity = response.getEntity();
             String rawText = EntityUtils.toString(entity, "UTF-8");
-            return new NoteDocumentText("001", "001", rawText);
+            Integer check01 = directory.hashCode();
+            String workspaceId = Integer.toString(directory.hashCode());
+            String noteDocumentId = Integer.toString(fileName.hashCode());
+            return new NoteDocumentText(workspaceId, noteDocumentId, rawText);
         } catch (IOException e) {
             e.printStackTrace();
             throw new Exception(e.getMessage());

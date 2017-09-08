@@ -26,7 +26,7 @@ public class NoteDocumentParser {
 
     public void parse(NoteDocumentText noteDocText) {
 
-        // Stream .getNoteParser(noteDocText).parse()
+        // Idea: Stream .getNoteParser(noteDocText).parse()
 
         NoteParser noteParser = noteParserMap.get(noteDocText.getNoteDocument().getNoteDocumentStructure());
         // TODO: change to assert not null ...
@@ -35,6 +35,7 @@ public class NoteDocumentParser {
             List<Tag> tags = tagParser.parse(noteDocText);
             NoteDocument noteDoc = noteDocText.getNoteDocument();
             noteDoc.setNotesAndTags(notes, tags);
+            noteDocText.setNoteDocument(noteDoc);
         }
         System.out.println("Finished");
     }

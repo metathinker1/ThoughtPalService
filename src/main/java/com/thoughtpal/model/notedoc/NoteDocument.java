@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /*
  *  TODO: Refactor as Bean; move display functions and state to another class; remove reference to parser
@@ -61,6 +62,13 @@ public class NoteDocument {
         noteDocItems.addAll(notes);
         noteDocItems.addAll(tags);
         setNoteDocItems(noteDocItems);
+    }
+
+    public void sortNoteDocItems()
+    {
+        noteDocItems = noteDocItems.stream()
+                .sorted((NoteDocItem item1, NoteDocItem item2) -> item1.getStartOffset().compareTo(item2.getStartOffset()))
+                .collect(Collectors.toList());
     }
 
     /* TODO: Move
