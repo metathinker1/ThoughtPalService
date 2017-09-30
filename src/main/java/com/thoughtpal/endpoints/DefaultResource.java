@@ -11,8 +11,12 @@ import lombok.extern.slf4j.Slf4j;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import javax.ws.rs.*;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 @Path("/")
 ///@Slf4j
@@ -32,15 +36,18 @@ public class DefaultResource {
 
     @GET()
     @Path("parse")
-    @Produces(MediaType.TEXT_XML)
-    public String parseNoteDocument(@QueryParam("dir") String directory, @QueryParam("file") String fileName)
+    @Produces(MediaType.TEXT_PLAIN) // Pass HTML snippet as plain text
+    public Response parseNoteDocument(@QueryParam("dir") String directory, @QueryParam("file") String fileName)
     {
         try {
+            System.out.println("parseNoteDocument: directory:" + directory + ", fileName:" + fileName);
             NoteDocumentText noteDocText = noteDocsClient.getNoteDocument(directory, fileName);
-            return noteDocSummarizer.summarizeAndRender(noteDocText);
+            String summaryHTML = noteDocSummarizer.summarizeAndRender(noteDocText);
+            return Response.ok(summaryHTML).header("Access-Control-Allow-Origin", "*").build();
         } catch (Exception e) {
             e.printStackTrace();
-            return "Error";
+            // TODO: How to add message
+            return Response.serverError().build();
         }
 
     }

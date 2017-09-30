@@ -27,7 +27,7 @@ public class NoteDocsClient
         String check = URLEncoder.encode(test, "UTF-8");
         //fileName = "AppDevFW%2EAWS%2Enodoc";
         //String uriPath = "http://localhost:5011/?dir=" + URLEncoder.encode(directory, "UTF-8") + "&file=" + URLEncoder.encode(fileName, "UTF-8");
-        String uriPath = "http://localhost:5011/?dir=" + directory + "&file=" + fileName;
+        String uriPath = "http://localhost:5011/get-notedoc?dir=" + directory + "&file=" + fileName;
         HttpGet httpGet = new HttpGet(uriPath);
         try {
             HttpResponse response = client.execute(httpGet);

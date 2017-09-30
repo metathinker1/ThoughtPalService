@@ -14,8 +14,8 @@ public class NoteDocSummaryRenderer {
         *    <h2>Note.summaryText()</h2>; <h3>Tag.summaryText()</h3>
         */
         StringBuilder outline = new StringBuilder();
-        outline.append("<!DOCTYPE html><html lang=\"en\"><head><title>Example 01 - Outline</title><link rel=\"stylesheet\" type=\"text/css\" href=\"./css/outlinestyle.css\"></head>");
-        outline.append("<body>");
+//        outline.append("<!DOCTYPE html><html lang=\"en\"><head><title>Example 01 - Outline</title><link rel=\"stylesheet\" type=\"text/css\" href=\"./css/outlinestyle.css\"></head>");
+//        outline.append("<body>");
         noteDoc.getNoteDocItems().stream()
             //.forEach(System.out::println);
             .forEach(noteDocItem -> {
@@ -27,7 +27,7 @@ public class NoteDocSummaryRenderer {
                     outline.append("<h3>" + tag.getSummaryText() + "</h3><br><br>");
                 }
             });
-        outline.append("\n</body></html>");
+//        outline.append("\n</body></html>");
         return outline.toString();
     }
 }
