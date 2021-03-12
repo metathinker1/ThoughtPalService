@@ -56,7 +56,7 @@ public class NoteDocumentParser {
             String filePath = "/Users/robertwood/Project.ThoughtPal/ThoughtPalService/src/main/java/com/thoughtpal/func/AppDevFW_1.AWS.nodoc";
             String rawText = tester.readFileAsString(filePath, StandardCharsets.UTF_8);
             NoteDocumentText noteDocText = NoteDocumentText.builder()
-                    .workspaceId("001").noteDocumentId("001").rawText(rawText).build();
+                    .filePath(filePath).workspaceId("001").noteDocumentId("001").rawText(rawText).build();
 
             tester.parse(noteDocText);
 

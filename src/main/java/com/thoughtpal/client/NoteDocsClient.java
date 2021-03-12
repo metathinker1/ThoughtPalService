@@ -24,14 +24,15 @@ public class NoteDocsClient
 
     public NoteDocumentText getNoteDocument(String directory, String fileName) throws Exception {
         String homeDirectory = "/Users/robertwood/Google Drive/NoteDocRepo/";
-        String filePath = homeDirectory + directory + '/' + fileName;
+        String fullFilePath = homeDirectory + directory + '/' + fileName;
+        String filePath = directory + '/' + fileName;
         //new String(Files.readAllBytes(Paths.get("duke.java")));
         try {
-            String rawText = new String(Files.readAllBytes(Paths.get(filePath)));
+            String rawText = new String(Files.readAllBytes(Paths.get(fullFilePath)));
             System.out.println(rawText);
             String workspaceId = Integer.toString(directory.hashCode());
             String noteDocumentId = Integer.toString(fileName.hashCode());
-            return new NoteDocumentText(workspaceId, noteDocumentId, rawText);
+            return new NoteDocumentText(filePath, workspaceId, noteDocumentId, rawText);
         } catch (Exception excp) {
             excp.printStackTrace();
             throw new Exception(excp.getMessage());
@@ -42,6 +43,8 @@ public class NoteDocsClient
     {
         // curl http://localhost:8080/AppDev/AppDevAPI.JavaServlet.nodoc
         //String uriPath = "http://localhost:5011/" + workspace + "/" + noteDocName;
+        String homeDirectory = "/Users/robertwood/Google Drive/NoteDocRepo/";
+        String filePath = directory + '/' + fileName;
         String test = "A test & and another";
         String check = URLEncoder.encode(test, "UTF-8");
         //fileName = "AppDevFW%2EAWS%2Enodoc";
@@ -56,7 +59,7 @@ public class NoteDocsClient
             Integer check01 = directory.hashCode();
             String workspaceId = Integer.toString(directory.hashCode());
             String noteDocumentId = Integer.toString(fileName.hashCode());
-            return new NoteDocumentText(workspaceId, noteDocumentId, rawText);
+            return new NoteDocumentText(filePath, workspaceId, noteDocumentId, rawText);
         } catch (IOException e) {
             e.printStackTrace();
             throw new Exception(e.getMessage());

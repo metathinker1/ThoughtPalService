@@ -25,15 +25,19 @@ public class NoteDocumentText {
 	private NoteDocument	noteDocument;
 
 	@Builder
-	public NoteDocumentText(String workspaceId, String noteDocumentId, String rawText) {
+	public NoteDocumentText(String filePath, String workspaceId, String noteDocumentId, String rawText) {
 	    this.workspaceId = workspaceId;
 	    this.noteDocumentId = noteDocumentId;
 	    this.rawText = rawText;
 
 	    // TODO: Cleanup
         // String category, String subject, NoteDocumentStructure structure, String workspaceId
-        this.noteDocument = NoteDocument.builder().
-                subject("Test Subject").structure(NoteDocument.NoteDocumentStructure.Outline).workspaceId(workspaceId).build();
+        this.noteDocument = NoteDocument.builder()
+				.filePath(filePath)
+				.subject("Test Subject")
+				.structure(NoteDocument.NoteDocumentStructure.Outline)
+				.workspaceId(workspaceId)
+				.build();
     }
 
 }

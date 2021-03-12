@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 public class NoteDocument {
     private String  id;
     private String  workspaceId;
+    private final String  filePath;
 
     private String  category;
     private String  subject;
@@ -48,7 +49,8 @@ public class NoteDocument {
     }
 
     @Builder
-    public NoteDocument(String category, String subject, NoteDocumentStructure structure, String workspaceId) {
+    public NoteDocument(String filePath, String category, String subject, NoteDocumentStructure structure, String workspaceId) {
+        this.filePath = filePath;
         this.category = category;
         this.subject = subject;
         this.noteDocumentStructure = structure;
