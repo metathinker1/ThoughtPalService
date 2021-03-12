@@ -19,7 +19,8 @@ public class TagParser {
 	private Pattern beginDataLinkTagPtrn = Pattern.compile("\\{DataLink:");
 	private Pattern beginDataTagPtrn = Pattern.compile("\\{DataTag:");
 	private Pattern beginSourceTagPtrn = Pattern.compile("\\{SourceTag:");
-	private Pattern beginNameValuePairsPtrn = Pattern.compile("\\{NVP:");
+	// 2021.03.12: Disable as the implementation throws errors -- likely was not completed and tested
+	//private Pattern beginNameValuePairsPtrn = Pattern.compile("\\{NVP:");
 
 	private Pattern endMultiLineTagPtrn = Pattern.compile("}\\\\");
 	
@@ -42,7 +43,7 @@ public class TagParser {
     	beginPatternList.add(beginDataTagPtrn);
     	beginPatternList.add(beginDataLinkTagPtrn);
     	beginPatternList.add(beginSourceTagPtrn);
-    	beginPatternList.add(beginNameValuePairsPtrn);
+    	//beginPatternList.add(beginNameValuePairsPtrn);
 
     	tagTypeMap.put(beginActiveTaskTagPtrn, Tag.TagType.Task);
         tagTypeMap.put(beginTextTagPtrn, Tag.TagType.TextTag);
@@ -235,9 +236,9 @@ public class TagParser {
                         ((TagParserFSM)nextParser).setTag(newTag);
                         return nextParser;
                     }
-                    else if (pattern == beginNameValuePairsPtrn) {
-                        return new NameValuePairsParserFSM(this);
-                    }
+//                    else if (pattern == beginNameValuePairsPtrn) {
+//                        return new NameValuePairsParserFSM(this);
+//                    }
                 }
             }
             return this;
@@ -262,9 +263,9 @@ public class TagParser {
             else if (pattern == beginActiveTaskTagPtrn) {
                 return new TagParserFSM(this, parserState.ix_lines);
             }
-            else if (pattern == beginNameValuePairsPtrn) {
-                return new NameValuePairsParserFSM(this);
-            }
+//            else if (pattern == beginNameValuePairsPtrn) {
+//                return new NameValuePairsParserFSM(this);
+//            }
             else {
                 System.out.println("Error: unrecognized pattern: [" + pattern.toString() + "]");
                 return null;
@@ -388,6 +389,10 @@ public class TagParser {
         private void parseNameValuePairs(Tag tag, String nameValuesStr) {
             //String[] parts = nameValuesStr.split("[ ]*=[ ]*");
             String[] parts = nameValuesStr.split("\\|");
+            if (parts.length != 2) {
+                log.error("parseNameValuePairs: nameValuesStr is not well formed: " + nameValuesStr);
+                return;
+            }
             Map<String, String> nameValues = new HashMap<String, String>();
             for (int ix = 0; ix < parts.length; ix++) {
                 String[] nameValue = parts[ix].split("=");
